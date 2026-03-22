@@ -15,7 +15,7 @@ MonoBehaviour:
   itemId: 1
   displayName: Test Item
   description: This is a testing item!
-  icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  icon: {fileID: 21300000, guid: 59d26e5672bcb614c90e07957d3f6985, type: 3}
   category: 4
   stackable: 0
   maxStack: 1

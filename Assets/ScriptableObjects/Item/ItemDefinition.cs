@@ -18,4 +18,19 @@ public class ItemDefinition : ScriptableObject
 
     [Header("Prefab")]
     public GameObject worldPrefab;
+
+    public virtual void UseHotBar(GameObject user)
+    {
+        Debug.Log($"{displayName} SELECTED");
+    }
+
+    public virtual void OnHotbarDeselected(GameObject user)
+    {
+        Debug.Log($"{displayName} DESELECTED");
+    }
+
+    public virtual void OnActiveItemAction(GameObject user)
+    {
+        Debug.Log($"{displayName} ACTION");
+    }
 }
