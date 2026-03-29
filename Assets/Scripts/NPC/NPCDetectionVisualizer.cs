@@ -2,57 +2,68 @@ using UnityEngine;
 
 public class NPCDetectionVisualizer : MonoBehaviour
 {
-    public enum ZoneState
+    public enum SignState
     {
-        Neutral,
+        None,
         Warning,
-        Danger
+        Detected,
+        Hostile
     }
 
-    [Header("Renderer")]
-    [SerializeField] private Renderer targetRenderer;
+    [Header("UI Signs")]
+    [SerializeField] private GameObject warningSign;
+    [SerializeField] private GameObject detectedSign;
+    [SerializeField] private GameObject hostileSign;
 
-    [Header("Colors")]
-    [SerializeField] private Color neutralColor = Color.green;
-    [SerializeField] private Color warningColor = Color.yellow;
-    [SerializeField] private Color dangerColor = Color.red;
+    [Header("Optional")]
+    [SerializeField] private bool billboardToCamera = true;
+    [SerializeField] private Transform targetCamera;
 
-    [Header("Material Color Property")]
-    [SerializeField] private string colorProperty = "_Color";
-
-    private MaterialPropertyBlock propertyBlock;
+    private SignState currentState = SignState.None;
 
     private void Awake()
     {
-        if (targetRenderer == null)
-            targetRenderer = GetComponent<Renderer>();
-
-        propertyBlock = new MaterialPropertyBlock();
-        SetState(ZoneState.Neutral);
+        SetState(SignState.None);
     }
 
-    public void SetState(ZoneState state)
+    private void LateUpdate()
     {
-        if (targetRenderer == null)
+        if (!billboardToCamera)
             return;
 
-        Color colorToUse = neutralColor;
+        Camera cam = null;
 
-        switch (state)
+        if (targetCamera != null)
         {
-            case ZoneState.Warning:
-                colorToUse = warningColor;
-                break;
-            case ZoneState.Danger:
-                colorToUse = dangerColor;
-                break;
-            default:
-                colorToUse = neutralColor;
-                break;
+            cam = targetCamera.GetComponent<Camera>();
         }
 
-        targetRenderer.GetPropertyBlock(propertyBlock);
-        propertyBlock.SetColor(colorProperty, colorToUse);
-        targetRenderer.SetPropertyBlock(propertyBlock);
+        if (cam == null)
+            cam = Camera.main;
+
+        if (cam == null)
+            return;
+
+        Vector3 direction = transform.position - cam.transform.position;
+        transform.rotation = Quaternion.LookRotation(direction);
+    }
+
+    public void SetState(SignState newState)
+    {
+        currentState = newState;
+
+        if (warningSign != null)
+            warningSign.SetActive(newState == SignState.Warning);
+
+        if (detectedSign != null)
+            detectedSign.SetActive(newState == SignState.Detected);
+
+        if (hostileSign != null)
+            hostileSign.SetActive(newState == SignState.Hostile);
+    }
+
+    public SignState GetState()
+    {
+        return currentState;
     }
 }

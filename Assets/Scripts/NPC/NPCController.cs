@@ -26,7 +26,7 @@ public class NPCController : MonoBehaviour
 
     [Header("Detection")]
     [SerializeField] private NPCDetectionZone detectionZone;
-    [SerializeField] private NPCDetectionVisualizer detectionVisualizer;
+    [SerializeField] private NPCDetectionVisualizer signVisualizer;
     [SerializeField] private List<NPCTagDetection> detectionRules = new List<NPCTagDetection>();
 
     [SerializeField] private bool stopMovingWhenHostileDetected = true;
@@ -65,7 +65,7 @@ public class NPCController : MonoBehaviour
         UpdateDetectionTimers();
         UpdateMovement();
         UpdateLookAt();
-        RefreshZoneColor();
+        RefreshSignState();
     }
 
     private void UpdateMovement()
@@ -170,41 +170,61 @@ public class NPCController : MonoBehaviour
 
         GameObject targetObject = progress.target.gameObject;
 
+        NPCMutualDialogueTrigger dialogueTrigger = GetComponent<NPCMutualDialogueTrigger>();
+        if (dialogueTrigger != null)
+        {
+            dialogueTrigger.TryDialogueWith(targetObject);
+
+            NPCDialogueController myDialogue = GetComponent<NPCDialogueController>();
+            if (myDialogue != null && myDialogue.IsInDialogue)
+                return;
+        }
+
         switch (progress.rule.reactionType)
         {
             case NPCReactionType.Friendly:
                 onFriendlyDetected?.Invoke(targetObject);
-                Debug.Log($"{name} detected FRIENDLY target: {targetObject.name}");
                 break;
 
             case NPCReactionType.Suspicious:
                 onSuspiciousDetected?.Invoke(targetObject);
-                Debug.Log($"{name} detected SUSPICIOUS target: {targetObject.name}");
                 break;
 
             case NPCReactionType.Hostile:
                 onHostileDetected?.Invoke(targetObject);
-                Debug.Log($"{name} detected HOSTILE target: {targetObject.name}");
-                break;
-
-            case NPCReactionType.Neutral:
-                Debug.Log($"{name} detected NEUTRAL target: {targetObject.name}");
-                break;
-
-            case NPCReactionType.Ignore:
                 break;
         }
     }
 
-    private void RefreshZoneColor()
+    private bool HasAnyFullyDetectedNonHostile()
+    {
+        foreach (var kvp in trackedTargets)
+        {
+            DetectionProgress progress = kvp.Value;
+
+            if (!progress.fullyDetected)
+                continue;
+
+            if (progress.rule.reactionType != NPCReactionType.Hostile)
+                return true;
+        }
+
+        return false;
+    }
+
+    private void RefreshSignState()
     {
         bool hasAnyTarget = trackedTargets.Count > 0;
         bool hasHostileDetected = HasDetectedReaction(NPCReactionType.Hostile);
-        bool hasSuspiciousDetected = HasDetectedReaction(NPCReactionType.Suspicious);
+        bool hasDetectedNonHostile = HasAnyFullyDetectedNonHostile();
 
-        if (hasHostileDetected || hasSuspiciousDetected)
+        if (hasHostileDetected)
         {
             SetDangerState();
+        }
+        else if (hasDetectedNonHostile)
+        {
+            SetDetectedState();
         }
         else if (hasAnyTarget)
         {
@@ -253,25 +273,42 @@ public class NPCController : MonoBehaviour
 
     private void SetNeutralState()
     {
-        detectionVisualizer?.SetState(NPCDetectionVisualizer.ZoneState.Neutral);
+        signVisualizer?.SetState(NPCDetectionVisualizer.SignState.None);
         onNeutralState?.Invoke();
     }
 
     private void SetWarningState()
     {
-        detectionVisualizer?.SetState(NPCDetectionVisualizer.ZoneState.Warning);
+        signVisualizer?.SetState(NPCDetectionVisualizer.SignState.Warning);
         onWarningState?.Invoke();
+    }
+
+    private void SetDetectedState()
+    {
+        signVisualizer?.SetState(NPCDetectionVisualizer.SignState.Detected);
     }
 
     private void SetDangerState()
     {
-        detectionVisualizer?.SetState(NPCDetectionVisualizer.ZoneState.Danger);
+        signVisualizer?.SetState(NPCDetectionVisualizer.SignState.Hostile);
         onDangerState?.Invoke();
+    }
+
+    private bool CanBeInterruptedBy(GameObject interruptor)
+    {
+        NPCDialogueController dialogue = GetComponent<NPCDialogueController>();
+        if (dialogue == null)
+            return true;
+
+        return dialogue.InterruptIfAllowed();
     }
 
     public void HandleTargetEnter(Collider other)
     {
         if (other == null || other.isTrigger)
+            return;
+
+        if (!CanBeInterruptedBy(other.gameObject))
             return;
 
         NPCTagDetection rule = GetRuleForTag(other.tag);
