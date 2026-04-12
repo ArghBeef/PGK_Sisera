@@ -10,7 +10,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{E6B6282E-5466-5C0A-2286-6696572DF6A2}</ProjectGuid>
+    <ProjectGuid>{DF2B8F82-58EA-C98B-6048-352ADBE095D0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -65,7 +65,6 @@
     <Compile Include="Assets\Scripts\Hotbar\HotbarSlot.cs" />
     <Compile Include="Assets\Scripts\Hotbar\PlayerHotbar.cs" />
     <Compile Include="Assets\Scripts\Weapon\WeaponController.cs" />
-    <Compile Include="Assets\Scripts\Interactables\InteractableCarHorn.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableDoor.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDetectionZone.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueMemory.cs" />
@@ -83,18 +82,15 @@
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueController.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueUI.cs" />
     <Compile Include="Assets\ScriptableObjects\Weapon\WeaponDefinition.cs" />
-    <Compile Include="Assets\Scripts\MaskingSystem.cs" />
     <Compile Include="Assets\ScriptableObjects\Item\ItemCategory.cs" />
     <Compile Include="Assets\Scripts\IDamageable.cs" />
     <Compile Include="Assets\ScriptableObjects\Item\ItemDefinition.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCTagDetection.cs" />
-    <Compile Include="Assets\Scripts\Interactables\InteractableLampToggle.cs" />
     <Compile Include="Assets\Scripts\CameraFollow.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCController.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueEntry.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCIdentity.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDetectionVisualizer.cs" />
-    <Compile Include="Assets\Scripts\DragObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
