@@ -62,19 +62,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCMutualDialogueTrigger.cs" />
-    <Compile Include="Assets\Scripts\Hotbar\HotbarSlot.cs" />
-    <Compile Include="Assets\Scripts\Hotbar\PlayerHotbar.cs" />
     <Compile Include="Assets\Scripts\Weapon\WeaponController.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableCarHorn.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableDoor.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDetectionZone.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueMemory.cs" />
-    <Compile Include="Assets\Scripts\UI\Hotbar\HotbarUI.cs" />
     <Compile Include="Assets\Scripts\Interactables\InterctableButton.cs" />
     <Compile Include="Assets\Scripts\PlayerInteractor.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableItemPickup.cs" />
+    <Compile Include="Assets\Scripts\PlayerEquipment.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialoguePriority.cs" />
-    <Compile Include="Assets\Scripts\UI\Hotbar\HotbarSlotUI.cs" />
     <Compile Include="Assets\Scripts\IInteractable.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueLine.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCReactionType.cs" />

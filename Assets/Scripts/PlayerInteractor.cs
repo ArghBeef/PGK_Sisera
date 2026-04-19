@@ -8,7 +8,8 @@ public class PlayerInteractor : MonoBehaviour
 
     [Header("Interaction")]
     [SerializeField] private string interactableTag = "interactables";
-    [SerializeField] private float interactDistance = 100f;
+    [SerializeField] private float clickRayDistance = 100f;
+    [SerializeField] private float interactDistance = 2f;
     [SerializeField] private LayerMask interactionLayers = ~0;
 
     private void OnEnable()
@@ -36,7 +37,7 @@ public class PlayerInteractor : MonoBehaviour
 
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
-        if (!Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactionLayers))
+        if (!Physics.Raycast(ray, out RaycastHit hit, clickRayDistance, interactionLayers))
             return;
 
         GameObject clickedObject = hit.collider.gameObject;
@@ -52,12 +53,21 @@ public class PlayerInteractor : MonoBehaviour
         if (interactable == null)
             interactable = hit.collider.GetComponentInChildren<IInteractable>();
 
-        //if (interactable == null)
-        //{
-        //    Debug.LogWarning(
-        //        $"Clicked object '{clickedObject.name}' has tag '{interactableTag}' but no IInteractable component.");
-        //    return;
-        //}
+        if (interactable == null)
+        {
+            Debug.LogWarning(
+                $"Clicked object '{clickedObject.name}' has tag '{interactableTag}' but no IInteractable component.");
+            return;
+        }
+
+        Transform interactableTransform = ((MonoBehaviour)interactable).transform;
+        float distanceToInteractable = Vector3.Distance(transform.position, interactableTransform.position);
+
+        if (distanceToInteractable > interactDistance)
+        {
+            Debug.Log($"Too far away to interact with {clickedObject.name}.");
+            return;
+        }
 
         interactable.Interact(gameObject);
     }

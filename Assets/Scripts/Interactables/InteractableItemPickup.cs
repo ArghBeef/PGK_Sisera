@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class InteractablePickup : MonoBehaviour, IInteractable
+public class InteractableItemPickup : MonoBehaviour, IInteractable
 {
     [SerializeField] private ItemDefinition itemDefinition;
     [SerializeField] private bool destroyOnPickup = true;
@@ -13,47 +13,25 @@ public class InteractablePickup : MonoBehaviour, IInteractable
             return;
         }
 
-        PlayerHotbar hotbar = interactor.GetComponent<PlayerHotbar>();
+        PlayerEquipment equipment = interactor.GetComponent<PlayerEquipment>();
 
-        if (hotbar == null)
-            hotbar = interactor.GetComponentInChildren<PlayerHotbar>();
+        if (equipment == null)
+            equipment = interactor.GetComponentInChildren<PlayerEquipment>();
 
-        if (hotbar == null)
+        if (equipment == null)
         {
-            Debug.LogWarning("PlayerHotbar not found on interactor.");
+            Debug.LogWarning("PlayerEquipment not found on interactor.");
             return;
         }
 
-        int targetSlot = FindFirstCompatibleEmptySlot(hotbar, itemDefinition);
+        bool pickedUp = equipment.TryPickup(itemDefinition);
 
-        if (targetSlot < 0)
-        {
-            Debug.Log($"No compatible free hotbar slot for {itemDefinition.displayName}.");
-            return;
-        }
-
-        bool added = hotbar.AssignItemToSlot(itemDefinition, targetSlot);
-
-        if (!added)
+        if (!pickedUp)
             return;
 
-        Debug.Log($"Picked up {itemDefinition.displayName} into slot {targetSlot + 1}");
+        Debug.Log($"Picked up {itemDefinition.displayName}");
 
         if (destroyOnPickup)
             Destroy(gameObject);
-    }
-
-    private int FindFirstCompatibleEmptySlot(PlayerHotbar hotbar, ItemDefinition item)
-    {
-        for (int i = 0; i < hotbar.SlotCount; i++)
-        {
-            if (hotbar.GetSlotItem(i) != null)
-                continue;
-
-            if (hotbar.GetSlotCategory(i) == item.category)
-                return i;
-        }
-
-        return -1;
     }
 }
