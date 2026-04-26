@@ -62,21 +62,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\NPC\NPCTaunt.cs" />
+    <Compile Include="Assets\Scripts\BreakableObject.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCMutualDialogueTrigger.cs" />
     <Compile Include="Assets\Scripts\Weapon\WeaponController.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableCarHorn.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableDoor.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDetectionZone.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueMemory.cs" />
+    <Compile Include="Assets\Scripts\Abilities\Ram\RamCharge.cs" />
+    <Compile Include="Assets\Scripts\Abilities\Ram\RamShield.cs" />
     <Compile Include="Assets\Scripts\Interactables\InterctableButton.cs" />
     <Compile Include="Assets\Scripts\PlayerInteractor.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableItemPickup.cs" />
     <Compile Include="Assets\Scripts\PlayerEquipment.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialoguePriority.cs" />
     <Compile Include="Assets\Scripts\IInteractable.cs" />
+    <Compile Include="Assets\Scripts\Abilities\PlayerClassController.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueLine.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCReactionType.cs" />
     <Compile Include="Assets\ScriptableObjects\Weapon\WeaponItemDefinition.cs" />
+    <Compile Include="Assets\ScriptableObjects\Abilities\AbilitiyDefinition.cs" />
     <Compile Include="Assets\Scripts\PC_Movement.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueController.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueUI.cs" />
@@ -87,6 +92,7 @@
     <Compile Include="Assets\Scripts\NPC\NPCStatus.cs" />
     <Compile Include="Assets\Scripts\IDamageable.cs" />
     <Compile Include="Assets\ScriptableObjects\Item\ItemDefinition.cs" />
+    <Compile Include="Assets\ScriptableObjects\Abilities\ClassDefinition.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCTagDetection.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableLampToggle.cs" />
     <Compile Include="Assets\Scripts\CameraFollow.cs" />

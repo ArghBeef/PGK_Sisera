@@ -135,4 +135,18 @@ public class PC_Movement : MonoBehaviour
         if (locked)
             moveInput = Vector3.zero;
     }
+
+    public Vector3 FacingDirection
+    {
+        get
+        {
+            if (modelRoot != null)
+                return modelRoot.forward;
+
+            if (lastMoveDirection.sqrMagnitude > 0.01f)
+                return lastMoveDirection;
+
+            return transform.forward;
+        }
+    }
 }
