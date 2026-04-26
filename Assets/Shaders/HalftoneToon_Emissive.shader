@@ -1,4 +1,4 @@
-Shader "Custom/URP/HalftoneToonTexturedStable"
+Shader "Custom/URP/HalftoneToon_Emissive"
 {
     Properties
     {
@@ -10,6 +10,15 @@ Shader "Custom/URP/HalftoneToonTexturedStable"
         _DotStrength ("Dot Strength", Range(0,1)) = 0.45
         _Threshold ("Light Threshold", Range(0,1)) = 0.45
         _Softness ("Lighting Softness", Range(0.001,0.5)) = 0.18
+
+        _EmissionMask ("Emission Mask", 2D) = "black" {}
+        _EmissionColor ("Emission Color", Color) = (1,0,0,1)
+        _EmissionStrength ("Emission Strength", Float) = 5
+
+        _PulseSpeed ("Pulse Speed", Float) = 8
+        _PulseAmount ("Pulse Amount", Range(0,1)) = 0.4
+        _VibrateSpeed ("Vibrate Speed", Float) = 40
+        _VibrateAmount ("Vibrate Amount", Range(0,0.05)) = 0.01
     }
 
     SubShader
@@ -40,14 +49,28 @@ Shader "Custom/URP/HalftoneToonTexturedStable"
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
 
+            TEXTURE2D(_EmissionMask);
+            SAMPLER(sampler_EmissionMask);
+
             CBUFFER_START(UnityPerMaterial)
                 float4 _MainTex_ST;
+                float4 _EmissionMask_ST;
+
                 float4 _BaseColor;
                 float4 _ShadowColor;
+
                 float _DotScale;
                 float _DotStrength;
                 float _Threshold;
                 float _Softness;
+
+                float4 _EmissionColor;
+                float _EmissionStrength;
+
+                float _PulseSpeed;
+                float _PulseAmount;
+                float _VibrateSpeed;
+                float _VibrateAmount;
             CBUFFER_END
 
             struct Attributes
@@ -63,15 +86,32 @@ Shader "Custom/URP/HalftoneToonTexturedStable"
                 float3 positionWS : TEXCOORD0;
                 float3 normalWS : TEXCOORD1;
                 float2 uv : TEXCOORD2;
+                float2 emissionUV : TEXCOORD3;
             };
 
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
-                OUT.positionWS = TransformObjectToWorld(IN.positionOS.xyz);
+
+                float3 positionOS = IN.positionOS.xyz;
+
+                // Tiny vertex vibration only on glowing parts
+                float2 emissionUV = TRANSFORM_TEX(IN.uv, _EmissionMask);
+                float mask = SAMPLE_TEXTURE2D_LOD(_EmissionMask, sampler_EmissionMask, emissionUV, 0).r;
+
+                float vibration =
+                    sin(_Time.y * _VibrateSpeed + positionOS.x * 30 + positionOS.y * 20)
+                    * _VibrateAmount
+                    * mask;
+
+                positionOS += IN.normalOS * vibration;
+
+                OUT.positionWS = TransformObjectToWorld(positionOS);
                 OUT.positionHCS = TransformWorldToHClip(OUT.positionWS);
                 OUT.normalWS = TransformObjectToWorldNormal(IN.normalOS);
                 OUT.uv = TRANSFORM_TEX(IN.uv, _MainTex);
+                OUT.emissionUV = emissionUV;
+
                 return OUT;
             }
 
@@ -122,8 +162,24 @@ Shader "Custom/URP/HalftoneToonTexturedStable"
                 float3 shadowedColor = baseTex * _ShadowColor.rgb;
                 float3 finalColor = lerp(baseTex, shadowedColor, shadowMask);
 
+                // Emission / glowing eyes
+                float emissionMask = SAMPLE_TEXTURE2D(_EmissionMask, sampler_EmissionMask, IN.emissionUV).r;
+
+                float pulse =
+                    1.0 + sin(_Time.y * _PulseSpeed) * _PulseAmount;
+
+                float flicker =
+                    1.0 + sin(_Time.y * _VibrateSpeed) * 0.08;
+
+                float emissionPower = _EmissionStrength * pulse * flicker;
+
+                float3 emission = _EmissionColor.rgb * emissionPower * emissionMask;
+
+                finalColor += emission;
+
                 return half4(finalColor, 1);
             }
+
             ENDHLSL
         }
 
@@ -156,12 +212,8 @@ Shader "Custom/URP/HalftoneToonTexturedStable"
             Varyings ShadowPassVertex(Attributes IN)
             {
                 Varyings OUT;
-
                 float3 positionWS = TransformObjectToWorld(IN.positionOS.xyz);
-                float3 normalWS = TransformObjectToWorldNormal(IN.normalOS);
-
                 OUT.positionHCS = TransformWorldToHClip(positionWS);
-
                 return OUT;
             }
 
