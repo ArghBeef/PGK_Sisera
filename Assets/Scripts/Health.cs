@@ -23,6 +23,10 @@ public class Health : MonoBehaviour, IDamageable
     public UnityEvent<float> onHealed;
     public UnityEvent onDeath;
 
+    public System.Action<float, float, float> OnHealthChanged;
+    public System.Action<float> OnDamageTaken;
+    public System.Action<float> OnHealedAmount;
+
     private bool dead;
 
     public float CurrentHealth => currentHealth;
@@ -34,20 +38,25 @@ public class Health : MonoBehaviour, IDamageable
     {
         if (startWithFullHealth)
             currentHealth = maxHealth;
+
+        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
     }
 
     public void TakeDamage(float damage)
     {
-        if (dead)
+        if (dead || damage <= 0f)
             return;
 
-        if (damage <= 0f)
-            return;
+        float oldHealth = currentHealth;
 
         currentHealth -= damage;
         currentHealth = Mathf.Max(currentHealth, 0f);
 
-        onDamaged?.Invoke(damage);
+        float realDamage = oldHealth - currentHealth;
+
+        onDamaged?.Invoke(realDamage);
+        OnDamageTaken?.Invoke(realDamage);
+        OnHealthChanged?.Invoke(currentHealth, maxHealth, -realDamage);
 
         if (currentHealth <= 0f)
             Die();
@@ -55,16 +64,19 @@ public class Health : MonoBehaviour, IDamageable
 
     public void Heal(float amount)
     {
-        if (dead)
+        if (dead || amount <= 0f)
             return;
 
-        if (amount <= 0f)
-            return;
+        float oldHealth = currentHealth;
 
         currentHealth += amount;
         currentHealth = Mathf.Min(currentHealth, maxHealth);
 
-        onHealed?.Invoke(amount);
+        float realHeal = currentHealth - oldHealth;
+
+        onHealed?.Invoke(realHeal);
+        OnHealedAmount?.Invoke(realHeal);
+        OnHealthChanged?.Invoke(currentHealth, maxHealth, realHeal);
     }
 
     public void Kill()
@@ -72,7 +84,13 @@ public class Health : MonoBehaviour, IDamageable
         if (dead)
             return;
 
+        float oldHealth = currentHealth;
+
         currentHealth = 0f;
+
+        OnDamageTaken?.Invoke(oldHealth);
+        OnHealthChanged?.Invoke(currentHealth, maxHealth, -oldHealth);
+
         Die();
     }
 
