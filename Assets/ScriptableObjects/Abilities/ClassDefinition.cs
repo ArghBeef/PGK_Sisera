@@ -12,11 +12,12 @@ public class ClassDefinition : ScriptableObject
     public AbilityDefinition ultimate;
 
     [Header("Passives")]
+    
     public bool damageHealsPlayer;
     [Range(0f, 1f)] public float damageHealPercent = 0.2f;
 
     public bool stunnedEnemiesTakeMoreDamage;
-    public float stunnedDamageMultiplier = 1.5f;
+    public float stunnedDamageMultiplier = 1.5f;    
 
     public bool stunnedKillsAreLessVisible = true;
 

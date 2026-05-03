@@ -18,17 +18,32 @@ public class PC_Movement : MonoBehaviour
     private Vector3 moveInput;
     private Vector3 lastMoveDirection;
 
+    private float moveSpeedMultiplier = 1f;
+    private float rotationSpeedMultiplier = 1f;
+
+    public Vector3 FacingDirection
+    {
+        get
+        {
+            if (modelRoot != null)
+                return modelRoot.forward;
+
+            if (lastMoveDirection.sqrMagnitude > 0.01f)
+                return lastMoveDirection;
+
+            return transform.forward;
+        }
+    }
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
 
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-
-        // Very important: physics should NOT rotate the player root.
         rb.constraints = RigidbodyConstraints.FreezeRotation;
 
-        if (modelRoot == null)
+        if (modelRoot == null && transform.childCount > 0)
             modelRoot = transform.GetChild(0);
     }
 
@@ -47,7 +62,6 @@ public class PC_Movement : MonoBehaviour
     private void Update()
     {
         ReadMovementInput();
-        //UpdateAnimator();
     }
 
     private void LateUpdate()
@@ -63,7 +77,7 @@ public class PC_Movement : MonoBehaviour
             return;
         }
 
-        Vector3 velocity = moveInput * moveSpeed;
+        Vector3 velocity = moveInput * moveSpeed * moveSpeedMultiplier;
         rb.linearVelocity = new Vector3(velocity.x, rb.linearVelocity.y, velocity.z);
     }
 
@@ -100,15 +114,6 @@ public class PC_Movement : MonoBehaviour
         lastMoveDirection = moveInput;
     }
 
-    private void MovePlayer()
-    {
-        if (IsMovementLocked || moveInput.sqrMagnitude < 0.01f)
-            return;
-
-        Vector3 newPosition = rb.position + moveInput * moveSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(newPosition);
-    }
-
     private void RotateModel()
     {
         if (modelRoot == null)
@@ -121,10 +126,11 @@ public class PC_Movement : MonoBehaviour
             return;
 
         Quaternion targetRotation = Quaternion.LookRotation(lastMoveDirection);
+
         modelRoot.rotation = Quaternion.Slerp(
             modelRoot.rotation,
             targetRotation,
-            rotationSpeed * Time.deltaTime
+            rotationSpeed * rotationSpeedMultiplier * Time.deltaTime
         );
     }
 
@@ -136,17 +142,15 @@ public class PC_Movement : MonoBehaviour
             moveInput = Vector3.zero;
     }
 
-    public Vector3 FacingDirection
+    public void SetSpeedMultipliers(float movementMultiplier, float rotationMultiplier)
     {
-        get
-        {
-            if (modelRoot != null)
-                return modelRoot.forward;
+        moveSpeedMultiplier = movementMultiplier;
+        rotationSpeedMultiplier = rotationMultiplier;
+    }
 
-            if (lastMoveDirection.sqrMagnitude > 0.01f)
-                return lastMoveDirection;
-
-            return transform.forward;
-        }
+    public void ResetSpeedMultipliers()
+    {
+        moveSpeedMultiplier = 1f;
+        rotationSpeedMultiplier = 1f;
     }
 }

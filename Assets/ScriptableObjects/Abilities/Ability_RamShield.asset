@@ -17,6 +17,11 @@ MonoBehaviour:
   icon: {fileID: 0}
   cooldown: 0
   grabRange: 2
+  grabRadius: 2
+  npcLayers:
+    serializedVersion: 2
+    m_Bits: 1
   duration: 5
+  holdDistance: 1.2
+  holdHeight: 0
   endStunDuration: 5
-  fallbackHoldPoint: {fileID: 0}

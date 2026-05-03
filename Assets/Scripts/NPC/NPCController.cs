@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -12,9 +12,17 @@ public class NPCController : MonoBehaviour
     private class DetectionProgress
     {
         public Collider target;
-        public float timeInside;
-        public bool fullyDetected;
+        public float timeVisible;
+        public bool detected;
         public NPCTagDetection rule;
+    }
+
+    private enum NPCDetectionState
+    {
+        None,
+        Warning,
+        Detect,
+        Hostile
     }
 
     [Header("Wandering")]
@@ -24,23 +32,30 @@ public class NPCController : MonoBehaviour
     [SerializeField] private float maxWaitAtPoint = 3f;
     [SerializeField] private float stoppingDistance = 0.2f;
 
-    [Header("Detection")]
-    [SerializeField] private NPCDetectionZone detectionZone;
-    [SerializeField] private NPCDetectionVisualizer signVisualizer;
+    [Header("Detection Box")]
+    [SerializeField] private Vector3 detectionBoxSize = new Vector3(4f, 2f, 6f);
+    [SerializeField] private Vector3 detectionBoxOffset = new Vector3(0f, 1f, 3f);
+    [SerializeField] private LayerMask targetLayers;
     [SerializeField] private List<NPCTagDetection> detectionRules = new List<NPCTagDetection>();
 
+    [Header("Line Of Sight")]
+    [SerializeField] private Transform eyePoint;
+    [SerializeField] private float eyeHeight = 1.6f;
+    [SerializeField] private float targetHeight = 1f;
+    [SerializeField] private LayerMask visionBlockLayers;
+
+    [Header("Behaviour")]
     [SerializeField] private bool stopMovingWhenHostileDetected = true;
     [SerializeField] private bool lookAtDetectedTarget = true;
     [SerializeField] private float lookSpeed = 8f;
 
-    [Header("Events")]
-    [SerializeField] private UnityEvent onNeutralState;
-    [SerializeField] private UnityEvent onWarningState;
-    [SerializeField] private UnityEvent onDangerState;
+    [Header("Visual")]
+    [SerializeField] private NPCDetectionVisualizer signVisualizer;
 
-    [SerializeField] private GameObjectEvent onFriendlyDetected;
-    [SerializeField] private GameObjectEvent onSuspiciousDetected;
-    [SerializeField] private GameObjectEvent onHostileDetected;
+    [Header("Events")]
+    [SerializeField] private GameObjectEvent onDetect;
+    [SerializeField] private GameObjectEvent onWarning;
+    [SerializeField] private GameObjectEvent onHostile;
 
     private NavMeshAgent agent;
     private readonly Dictionary<Collider, DetectionProgress> trackedTargets = new();
@@ -48,35 +63,254 @@ public class NPCController : MonoBehaviour
     private float currentWaitTime;
     private bool waitingAtPoint;
     private Transform currentLookTarget;
+    private NPCDetectionState currentState = NPCDetectionState.None;
 
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         agent.stoppingDistance = stoppingDistance;
 
-        if (detectionZone != null)
-            detectionZone.Initialize(this);
-
-        SetNeutralState();
+        SetState(NPCDetectionState.None, null);
     }
 
     private void Update()
     {
+        ScanDetectionBox();
         UpdateDetectionTimers();
         UpdateMovement();
         UpdateLookAt();
-        RefreshSignState();
+        RefreshState();
+    }
+
+    private void ScanDetectionBox()
+    {
+        HashSet<Collider> currentlyInside = new();
+
+        Vector3 center = transform.TransformPoint(detectionBoxOffset);
+        Vector3 halfExtents = detectionBoxSize * 0.5f;
+
+        Collider[] hits = Physics.OverlapBox(
+            center,
+            halfExtents,
+            transform.rotation,
+            targetLayers,
+            QueryTriggerInteraction.Ignore
+        );
+
+        foreach (Collider hit in hits)
+        {
+            if (hit == null || hit.transform.root == transform.root)
+                continue;
+
+            NPCTagDetection rule = GetRuleForTag(hit.tag);
+
+            if (rule == null || rule.reactionType == NPCReactionType.Ignore)
+                continue;
+
+            currentlyInside.Add(hit);
+
+            if (!trackedTargets.ContainsKey(hit))
+            {
+                trackedTargets.Add(hit, new DetectionProgress
+                {
+                    target = hit,
+                    timeVisible = 0f,
+                    detected = false,
+                    rule = rule
+                });
+            }
+        }
+
+        List<Collider> toRemove = new();
+
+        foreach (var kvp in trackedTargets)
+        {
+            if (!currentlyInside.Contains(kvp.Key))
+                toRemove.Add(kvp.Key);
+        }
+
+        foreach (Collider col in toRemove)
+            trackedTargets.Remove(col);
+    }
+
+    private void UpdateDetectionTimers()
+    {
+        currentLookTarget = null;
+
+        foreach (var kvp in trackedTargets)
+        {
+            DetectionProgress progress = kvp.Value;
+
+            if (progress.target == null)
+                continue;
+
+            bool canSee = CanSeeTarget(progress.target);
+
+            if (!canSee)
+            {
+                progress.timeVisible = 0f;
+                continue;
+            }
+
+            progress.timeVisible += Time.deltaTime;
+
+            if (!progress.detected && progress.timeVisible >= progress.rule.detectionTime)
+            {
+                progress.detected = true;
+                ReactToTarget(progress);
+            }
+
+            if (progress.detected &&
+                (progress.rule.reactionType == NPCReactionType.Hostile ||
+                 progress.rule.reactionType == NPCReactionType.Suspicious))
+            {
+                currentLookTarget = progress.target.transform;
+            }
+        }
+    }
+
+    private bool CanSeeTarget(Collider target)
+    {
+        Vector3 origin = eyePoint != null
+            ? eyePoint.position
+            : transform.position + Vector3.up * eyeHeight;
+
+        Vector3 targetPoint = target.bounds.center;
+        targetPoint.y = target.transform.position.y + targetHeight;
+
+        Vector3 direction = targetPoint - origin;
+        float distance = direction.magnitude;
+
+        if (Physics.Raycast(
+            origin,
+            direction.normalized,
+            out RaycastHit hit,
+            distance,
+            visionBlockLayers,
+            QueryTriggerInteraction.Ignore
+        ))
+        {
+            if (hit.collider != target && !hit.collider.transform.IsChildOf(target.transform))
+                return false;
+        }
+
+        return true;
+    }
+
+
+    private void ReactToTarget(DetectionProgress progress)
+    {
+        if (progress.target == null)
+            return;
+
+        GameObject targetObject = progress.target.gameObject;
+
+        NPCMutualDialogueTrigger dialogueTrigger = GetComponent<NPCMutualDialogueTrigger>();
+
+        if (dialogueTrigger != null)
+        {
+            dialogueTrigger.TryDialogueWith(targetObject);
+
+            NPCDialogueController myDialogue = GetComponent<NPCDialogueController>();
+
+            if (myDialogue != null && myDialogue.IsInDialogue)
+                return;
+        }
+
+        if (progress.rule.reactionType == NPCReactionType.Hostile)
+            SetState(NPCDetectionState.Hostile, targetObject);
+        else
+            SetState(NPCDetectionState.Detect, targetObject);
+    }
+
+    private void RefreshState()
+    {
+        GameObject visible = GetVisibleTarget();
+        GameObject detected = GetDetectedTarget();
+        GameObject hostile = GetDetectedTarget(NPCReactionType.Hostile);
+
+        if (hostile != null)
+            SetState(NPCDetectionState.Hostile, hostile);
+        else if (detected != null)
+            SetState(NPCDetectionState.Detect, detected);
+        else if (visible != null)
+            SetState(NPCDetectionState.Warning, visible);
+        else
+            SetState(NPCDetectionState.None, null);
+    }
+
+    private void SetState(NPCDetectionState newState, GameObject target)
+    {
+        if (currentState == newState)
+            return;
+
+        currentState = newState;
+
+        switch (newState)
+        {
+            case NPCDetectionState.None:
+                signVisualizer?.SetState(NPCDetectionVisualizer.SignState.None);
+                break;
+
+            case NPCDetectionState.Warning:
+                signVisualizer?.SetState(NPCDetectionVisualizer.SignState.Warning);
+                onWarning?.Invoke(target);
+                break;
+
+            case NPCDetectionState.Detect:
+                signVisualizer?.SetState(NPCDetectionVisualizer.SignState.Detected);
+                onDetect?.Invoke(target);
+                break;
+
+            case NPCDetectionState.Hostile:
+                signVisualizer?.SetState(NPCDetectionVisualizer.SignState.Hostile);
+                onHostile?.Invoke(target);
+                break;
+        }
+    }
+
+    private GameObject GetVisibleTarget()
+    {
+        foreach (var kvp in trackedTargets)
+        {
+            if (kvp.Value.target != null && CanSeeTarget(kvp.Value.target))
+                return kvp.Value.target.gameObject;
+        }
+        return null;
+    }
+
+    private GameObject GetDetectedTarget(NPCReactionType type = NPCReactionType.Neutral)
+    {
+        foreach (var kvp in trackedTargets)
+        {
+            var p = kvp.Value;
+
+            if (p.target != null &&
+                p.detected &&
+                CanSeeTarget(p.target) &&
+                (type == NPCReactionType.Neutral || p.rule.reactionType == type))
+            {
+                return p.target.gameObject;
+            }
+        }
+        return null;
+    }
+
+    private NPCTagDetection GetRuleForTag(string tagToCheck)
+    {
+        foreach (var rule in detectionRules)
+        {
+            if (rule != null && rule.targetTag == tagToCheck)
+                return rule;
+        }
+        return null;
     }
 
     private void UpdateMovement()
     {
-        bool hostileDetected = HasDetectedReaction(NPCReactionType.Hostile);
-
-        if (stopMovingWhenHostileDetected && hostileDetected)
+        if (stopMovingWhenHostileDetected && GetDetectedTarget(NPCReactionType.Hostile) != null)
         {
-            if (!agent.isStopped)
-                agent.isStopped = true;
-
+            agent.isStopped = true;
             return;
         }
 
@@ -108,242 +342,37 @@ public class NPCController : MonoBehaviour
         if (!lookAtDetectedTarget || currentLookTarget == null)
             return;
 
-        Vector3 targetPosition = currentLookTarget.position;
-        Vector3 myPosition = transform.position;
+        Vector3 dir = currentLookTarget.position - transform.position;
+        dir.y = 0f;
 
-        Vector3 direction = targetPosition - myPosition;
-        direction.y = 0f;
-
-        if (direction.sqrMagnitude < 0.001f)
+        if (dir.sqrMagnitude < 0.001f)
             return;
 
-        Quaternion targetRotation = Quaternion.LookRotation(direction);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, lookSpeed * Time.deltaTime);
-    }
-
-    private void UpdateDetectionTimers()
-    {
-        currentLookTarget = null;
-
-        List<Collider> toRemove = null;
-
-        foreach (var kvp in trackedTargets)
-        {
-            DetectionProgress progress = kvp.Value;
-
-            if (progress.target == null)
-            {
-                if (toRemove == null)
-                    toRemove = new List<Collider>();
-
-                toRemove.Add(kvp.Key);
-                continue;
-            }
-
-            progress.timeInside += Time.deltaTime;
-
-            if (!progress.fullyDetected && progress.timeInside >= progress.rule.detectionTime)
-            {
-                progress.fullyDetected = true;
-                ReactToTarget(progress);
-            }
-
-            if (progress.fullyDetected &&
-                (progress.rule.reactionType == NPCReactionType.Hostile ||
-                 progress.rule.reactionType == NPCReactionType.Suspicious))
-            {
-                currentLookTarget = progress.target.transform;
-            }
-        }
-
-        if (toRemove != null)
-        {
-            foreach (Collider col in toRemove)
-                trackedTargets.Remove(col);
-        }
-    }
-
-    private void ReactToTarget(DetectionProgress progress)
-    {
-        if (progress.target == null)
-            return;
-
-        GameObject targetObject = progress.target.gameObject;
-
-        NPCMutualDialogueTrigger dialogueTrigger = GetComponent<NPCMutualDialogueTrigger>();
-        if (dialogueTrigger != null)
-        {
-            dialogueTrigger.TryDialogueWith(targetObject);
-
-            NPCDialogueController myDialogue = GetComponent<NPCDialogueController>();
-            if (myDialogue != null && myDialogue.IsInDialogue)
-                return;
-        }
-
-        switch (progress.rule.reactionType)
-        {
-            case NPCReactionType.Friendly:
-                onFriendlyDetected?.Invoke(targetObject);
-                break;
-
-            case NPCReactionType.Suspicious:
-                onSuspiciousDetected?.Invoke(targetObject);
-                break;
-
-            case NPCReactionType.Hostile:
-                onHostileDetected?.Invoke(targetObject);
-                break;
-        }
-    }
-
-    private bool HasAnyFullyDetectedNonHostile()
-    {
-        foreach (var kvp in trackedTargets)
-        {
-            DetectionProgress progress = kvp.Value;
-
-            if (!progress.fullyDetected)
-                continue;
-
-            if (progress.rule.reactionType != NPCReactionType.Hostile)
-                return true;
-        }
-
-        return false;
-    }
-
-    private void RefreshSignState()
-    {
-        bool hasAnyTarget = trackedTargets.Count > 0;
-        bool hasHostileDetected = HasDetectedReaction(NPCReactionType.Hostile);
-        bool hasDetectedNonHostile = HasAnyFullyDetectedNonHostile();
-
-        if (hasHostileDetected)
-        {
-            SetDangerState();
-        }
-        else if (hasDetectedNonHostile)
-        {
-            SetDetectedState();
-        }
-        else if (hasAnyTarget)
-        {
-            SetWarningState();
-        }
-        else
-        {
-            SetNeutralState();
-        }
-    }
-
-    private bool HasDetectedReaction(NPCReactionType reactionType)
-    {
-        foreach (var kvp in trackedTargets)
-        {
-            DetectionProgress progress = kvp.Value;
-            if (progress.fullyDetected && progress.rule.reactionType == reactionType)
-                return true;
-        }
-
-        return false;
-    }
-
-    private NPCTagDetection GetRuleForTag(string tagToCheck)
-    {
-        for (int i = 0; i < detectionRules.Count; i++)
-        {
-            if (detectionRules[i] != null && detectionRules[i].targetTag == tagToCheck)
-                return detectionRules[i];
-        }
-
-        return null;
+        Quaternion rot = Quaternion.LookRotation(dir);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rot, lookSpeed * Time.deltaTime);
     }
 
     private void MoveToRandomPoint()
     {
-        Vector3 randomDirection = Random.insideUnitSphere * wanderRadius;
-        randomDirection += transform.position;
-        randomDirection.y = transform.position.y;
+        Vector3 random = Random.insideUnitSphere * wanderRadius + transform.position;
+        random.y = transform.position.y;
 
-        if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, wanderRadius, NavMesh.AllAreas))
-        {
+        if (NavMesh.SamplePosition(random, out NavMeshHit hit, wanderRadius, NavMesh.AllAreas))
             agent.SetDestination(hit.position);
-        }
     }
 
-    private void SetNeutralState()
+    private void OnDrawGizmosSelected()
     {
-        signVisualizer?.SetState(NPCDetectionVisualizer.SignState.None);
-        onNeutralState?.Invoke();
-    }
+        Gizmos.color = Color.yellow;
 
-    private void SetWarningState()
-    {
-        signVisualizer?.SetState(NPCDetectionVisualizer.SignState.Warning);
-        onWarningState?.Invoke();
-    }
+        Vector3 center = transform.TransformPoint(detectionBoxOffset);
 
-    private void SetDetectedState()
-    {
-        signVisualizer?.SetState(NPCDetectionVisualizer.SignState.Detected);
-    }
+        Matrix4x4 old = Gizmos.matrix;
+        Gizmos.matrix = Matrix4x4.TRS(center, transform.rotation, Vector3.one);
+        Gizmos.DrawWireCube(Vector3.zero, detectionBoxSize);
+        Gizmos.matrix = old;
 
-    private void SetDangerState()
-    {
-        signVisualizer?.SetState(NPCDetectionVisualizer.SignState.Hostile);
-        onDangerState?.Invoke();
-    }
-
-    private bool CanBeInterruptedBy(GameObject interruptor)
-    {
-        NPCDialogueController dialogue = GetComponent<NPCDialogueController>();
-        if (dialogue == null)
-            return true;
-
-        return dialogue.InterruptIfAllowed();
-    }
-
-    public void HandleTargetEnter(Collider other)
-    {
-        if (other == null || other.isTrigger)
-            return;
-
-        if (!CanBeInterruptedBy(other.gameObject))
-            return;
-
-        NPCTagDetection rule = GetRuleForTag(other.tag);
-        if (rule == null || rule.reactionType == NPCReactionType.Ignore)
-            return;
-
-        if (!trackedTargets.ContainsKey(other))
-        {
-            trackedTargets.Add(other, new DetectionProgress
-            {
-                target = other,
-                timeInside = 0f,
-                fullyDetected = false,
-                rule = rule
-            });
-        }
-    }
-
-    public void HandleTargetStay(Collider other)
-    {
-        if (other == null || other.isTrigger)
-            return;
-
-        if (!trackedTargets.ContainsKey(other))
-        {
-            HandleTargetEnter(other);
-        }
-    }
-
-    public void HandleTargetExit(Collider other)
-    {
-        if (other == null)
-            return;
-
-        if (trackedTargets.ContainsKey(other))
-            trackedTargets.Remove(other);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, wanderRadius);
     }
 }

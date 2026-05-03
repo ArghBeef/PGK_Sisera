@@ -258,7 +258,7 @@ GameObject:
   - component: {fileID: 50973670}
   - component: {fileID: 50973669}
   - component: {fileID: 50973668}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (12)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -486,7 +486,7 @@ GameObject:
   - component: {fileID: 118899143}
   - component: {fileID: 118899142}
   - component: {fileID: 118899141}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -598,7 +598,7 @@ GameObject:
   - component: {fileID: 172565266}
   - component: {fileID: 172565265}
   - component: {fileID: 172565264}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -912,7 +912,7 @@ GameObject:
   - component: {fileID: 344187427}
   - component: {fileID: 344187426}
   - component: {fileID: 344187425}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1261,7 +1261,7 @@ GameObject:
   - component: {fileID: 429937551}
   - component: {fileID: 429937550}
   - component: {fileID: 429937549}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1373,7 +1373,7 @@ GameObject:
   - component: {fileID: 454440337}
   - component: {fileID: 454440336}
   - component: {fileID: 454440335}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1586,6 +1586,34 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: eyePoint
+      value: 
+      objectReference: {fileID: 459153924}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: wanderRadius
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: detectionBoxSize.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: detectionBoxSize.z
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: targetLayers.m_Bits
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: detectionBoxOffset.z
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: visionBlockLayers.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
       propertyPath: detectionRules.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -1667,10 +1695,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8878565504594727769, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8693923136703481599, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1335995142507791673, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
-      insertIndex: 1
+      insertIndex: 0
       addedObject: {fileID: 1954951530}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7721923480478965062, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
@@ -1710,7 +1739,7 @@ GameObject:
   - component: {fileID: 542262008}
   - component: {fileID: 542262007}
   - component: {fileID: 542262006}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (16)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2201,7 +2230,7 @@ GameObject:
   - component: {fileID: 726326940}
   - component: {fileID: 726326939}
   - component: {fileID: 726326938}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (17)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2313,7 +2342,7 @@ GameObject:
   - component: {fileID: 747450987}
   - component: {fileID: 747450986}
   - component: {fileID: 747450985}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (19)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2542,7 +2571,7 @@ GameObject:
   - component: {fileID: 830581466}
   - component: {fileID: 830581465}
   - component: {fileID: 830581464}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2703,7 +2732,7 @@ GameObject:
   - component: {fileID: 838757071}
   - component: {fileID: 838757070}
   - component: {fileID: 838757069}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (13)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2842,7 +2871,7 @@ MonoBehaviour:
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 64
   m_UseGeometry: 0
   m_DefaultArea: 0
   m_GenerateLinks: 0
@@ -2960,7 +2989,7 @@ GameObject:
   - component: {fileID: 867217969}
   - component: {fileID: 867217968}
   - component: {fileID: 867217967}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3428,7 +3457,7 @@ GameObject:
   - component: {fileID: 1287508958}
   - component: {fileID: 1287508957}
   - component: {fileID: 1287508956}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (14)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3839,7 +3868,7 @@ GameObject:
   - component: {fileID: 1474700372}
   - component: {fileID: 1474700371}
   - component: {fileID: 1474700370}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4014,7 +4043,7 @@ GameObject:
   - component: {fileID: 1521631974}
   - component: {fileID: 1521631973}
   - component: {fileID: 1521631972}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4126,7 +4155,7 @@ GameObject:
   - component: {fileID: 1528709244}
   - component: {fileID: 1528709243}
   - component: {fileID: 1528709242}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (18)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4314,7 +4343,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1638184106}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Stairs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4589,7 +4618,7 @@ GameObject:
   - component: {fileID: 1703498391}
   - component: {fileID: 1703498390}
   - component: {fileID: 1703498389}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (15)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4966,7 +4995,7 @@ GameObject:
   - component: {fileID: 1969366841}
   - component: {fileID: 1969366840}
   - component: {fileID: 1969366839}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: Cube (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5078,7 +5107,7 @@ GameObject:
   - component: {fileID: 2004177306}
   - component: {fileID: 2004177305}
   - component: {fileID: 2004177304}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5370,6 +5399,42 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: eyePoint
+      value: 
+      objectReference: {fileID: 3220432161501623994}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: wanderRadius
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: detectionBoxSize.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: detectionBoxSize.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: detectionBoxSize.z
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: targetLayers.m_Bits
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: detectionBoxOffset.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: detectionBoxOffset.z
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: visionBlockLayers.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
       propertyPath: detectionRules.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -5378,12 +5443,28 @@ PrefabInstance:
       value: NPC
       objectReference: {fileID: 0}
     - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: detectionRules.Array.data[0].reactionType
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
       propertyPath: detectionRules.Array.data[1].reactionType
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
       propertyPath: detectionRules.Array.data[1].detectionTime
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: onNeutralState.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: onNeutralState.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7721923480478965062, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+    - target: {fileID: 3247159527069666864, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
+      propertyPath: onNeutralState.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3525700829027631056, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -5451,10 +5532,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8878565504594727769, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8693923136703481599, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1335995142507791673, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
-      insertIndex: 1
+      insertIndex: 0
       addedObject: {fileID: 358020971}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7721923480478965062, guid: 9a3470649a2fd654fb139bef0bbcd26c, type: 3}
@@ -5507,6 +5589,18 @@ PrefabInstance:
     - target: {fileID: 1399319278923504236, guid: 18edb8a17cc23a04c978a0b5f50e8ca7, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1399319278923504236, guid: 18edb8a17cc23a04c978a0b5f50e8ca7, type: 3}
+      propertyPath: m_MinRegionArea
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1399319278923504236, guid: 18edb8a17cc23a04c978a0b5f50e8ca7, type: 3}
+      propertyPath: m_LayerMask.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 1399319278923504236, guid: 18edb8a17cc23a04c978a0b5f50e8ca7, type: 3}
+      propertyPath: m_OverrideVoxelSize
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8289688978146768447, guid: 18edb8a17cc23a04c978a0b5f50e8ca7, type: 3}
       propertyPath: m_Enabled
