@@ -4,6 +4,8 @@ Shader "Custom/ToonEnv"
     {
         _BaseMap ("Base Texture", 2D) = "white" {}
         _BaseColor ("Base Tint", Color) = (1,1,1,1)
+        _Alpha ("Alpha", Range(0,1)) = 1
+        [HideInInspector] _ZWrite ("ZWrite", Float) = 1
 
         _ShadowColor ("Shadow Tint", Color) = (0.45,0.55,0.35,1)
         _ShadowStrength ("Shadow Strength", Range(0,1)) = 0.65
@@ -22,14 +24,18 @@ Shader "Custom/ToonEnv"
         Tags
         {
             "RenderPipeline"="UniversalPipeline"
-            "RenderType"="Opaque"
-            "Queue"="Geometry"
+            "RenderType"="Transparent"
+            "Queue"="Transparent"
         }
 
         Pass
         {
             Name "ForwardLit"
             Tags { "LightMode"="UniversalForward" }
+
+            Blend SrcAlpha OneMinusSrcAlpha
+            ZWrite [_ZWrite]
+            Cull Back
 
             HLSLPROGRAM
             #pragma target 3.5
@@ -52,6 +58,9 @@ Shader "Custom/ToonEnv"
                 float4 _BaseColor;
                 float4 _ShadowColor;
                 float4 _HatchColor;
+
+                float _Alpha;
+                float _ZWrite;
                 float _ShadowStrength;
                 float _HatchScale;
                 float _HatchWidth;
@@ -109,12 +118,8 @@ Shader "Custom/ToonEnv"
                 Light mainLight = GetMainLight(input.shadowCoord);
 
                 float ndotl = saturate(dot(normalWS, mainLight.direction));
-
-                // Unity shadow map value:
-                // 1 = lit, 0 = shadowed
                 float rawShadow = mainLight.shadowAttenuation;
 
-                // Softer shadow transition to reduce harsh popping
                 float softShadow = smoothstep(
                     0.5 - _ShadowSoftness * 0.5,
                     0.5 + _ShadowSoftness * 0.5,
@@ -123,24 +128,21 @@ Shader "Custom/ToonEnv"
 
                 float lightAmount = saturate(ndotl * softShadow + _Ambient);
 
-                // Takes color from base texture
                 float3 textureColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv).rgb;
                 float3 baseColor = textureColor * _BaseColor.rgb;
 
                 float shadowMask = saturate((1.0 - lightAmount) * _ShadowStrength);
                 shadowMask = smoothstep(0.05, 0.95, shadowMask);
 
-                // Shadow is based on the texture color, not flat color
                 float3 tintedShadow = baseColor * _ShadowColor.rgb;
                 float3 colorWithShadow = lerp(baseColor, tintedShadow, shadowMask);
 
-                // Hatching only appears in shadowed areas
                 float hatch = Hatch(input.positionWS);
                 float hatchMask = hatch * shadowMask * _HatchStrength;
 
                 float3 finalColor = lerp(colorWithShadow, _HatchColor.rgb, hatchMask);
 
-                return float4(finalColor, 1.0);
+                return float4(finalColor, _BaseColor.a * _Alpha);
             }
             ENDHLSL
         }
