@@ -19,6 +19,10 @@ public class WeaponDefinition : ScriptableObject
     [Min(1)] public int bulletsPerShot = 1;
     [Min(0f)] public float spread = 1.5f;
 
+    [Header("Bullet")]
+    public WeaponBullet bulletPrefab;
+    [Min(0.1f)] public float bulletSpeed = 35f;
+
     [Header("Optional Visuals")]
     public GameObject muzzleFlashPrefab;
     public GameObject hitEffectPrefab;

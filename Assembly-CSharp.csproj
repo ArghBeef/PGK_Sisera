@@ -64,13 +64,12 @@
     <Compile Include="Assets\Scripts\NPC\NPCTaunt.cs" />
     <Compile Include="Assets\Scripts\BreakableObject.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCMutualDialogueTrigger.cs" />
-    <Compile Include="Assets\Scripts\Weapon\WeaponController.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableCarHorn.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableDoor.cs" />
-    <Compile Include="Assets\Scripts\NPC\NPCDetectionZone.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueMemory.cs" />
     <Compile Include="Assets\Scripts\Abilities\Ram\RamCharge.cs" />
     <Compile Include="Assets\Scripts\Abilities\Ram\RamShield.cs" />
+    <Compile Include="Assets\Scripts\Weapon\WeaponBullet.cs" />
     <Compile Include="Assets\Scripts\Interactables\InterctableButton.cs" />
     <Compile Include="Assets\Scripts\PlayerInteractor.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableItemPickup.cs" />
@@ -103,6 +102,7 @@
     <Compile Include="Assets\Scripts\NPC\NPCController.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueEntry.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCIdentity.cs" />
+    <Compile Include="Assets\Scripts\Weapon\PlayerWeaponContoller.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDetectionVisualizer.cs" />
     <Compile Include="Assets\Scripts\DragObject.cs" />
   </ItemGroup>
