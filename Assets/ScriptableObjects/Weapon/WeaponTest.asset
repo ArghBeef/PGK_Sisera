@@ -28,5 +28,5 @@ MonoBehaviour:
   bulletSpeed: 35
   muzzleFlashPrefab: {fileID: 0}
   hitEffectPrefab: {fileID: 0}
-  shootSfx: {fileID: 0}
-  reloadSfx: {fileID: 0}
+  shootSfx: {fileID: 8300000, guid: c140b0eeb18db48489ad1c900cdea5ec, type: 3}
+  reloadSfx: {fileID: 8300000, guid: f0f7f7b0aa4b08f4c939354da08e1898, type: 3}
