@@ -16,12 +16,14 @@ MonoBehaviour:
   description: 
   icon: {fileID: 0}
   cooldown: 0
-  grabRange: 2
-  grabRadius: 2
+  grabRange: 3
+  grabRadius: 3
   npcLayers:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 512
   duration: 5
   holdDistance: 1.2
   holdHeight: 0
+  playerMoveSpeedMultiplier: 0.45
+  playerRotationSpeedMultiplier: 0.55
   endStunDuration: 5

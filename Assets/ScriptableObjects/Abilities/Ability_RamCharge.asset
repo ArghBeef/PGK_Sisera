@@ -17,16 +17,17 @@ MonoBehaviour:
   icon: {fileID: 0}
   cooldown: 0
   chargeDistance: 8
-  chargeSpeed: 25
+  chargeSpeed: 35
   radius: 0.5
-  damage: 1
+  chargeAnimationTrigger: RamCharge
+  damage: 15
   stunDuration: 2.5
-  pushForce: 5
+  pushForce: 8
   hitLayers:
     serializedVersion: 2
-    m_Bits: 129
+    m_Bits: 641
   obstacleLayers:
     serializedVersion: 2
-    m_Bits: 129
+    m_Bits: 641
   wallCheckHeight: 0.4
   wallCheckExtraDistance: 0.2

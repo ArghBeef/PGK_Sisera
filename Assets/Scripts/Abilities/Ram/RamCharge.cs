@@ -10,6 +10,9 @@ public class RamChargeAbility : AbilityDefinition
     public float chargeSpeed = 16f;
     public float radius = 1.2f;
 
+    [Header("Animation")]
+    public string chargeAnimationTrigger = "RamCharge";
+
     [Header("Hit")]
     public float damage = 20f;
     public float stunDuration = 2f;
@@ -36,6 +39,7 @@ public class RamChargeRunner : MonoBehaviour
 {
     private bool charging;
     private Rigidbody rb;
+    private Animator animator;
 
     private RamChargeAbility currentAbility;
     private PlayerClassController currentClassController;
@@ -46,6 +50,7 @@ public class RamChargeRunner : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     public void StartCharge(RamChargeAbility ability, PlayerClassController classController)
@@ -66,6 +71,11 @@ public class RamChargeRunner : MonoBehaviour
 
         if (rb == null)
             rb = GetComponent<Rigidbody>();
+
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
+
+        PlayChargeAnimation();
 
         PC_Movement movement = GetComponent<PC_Movement>();
 
@@ -112,6 +122,20 @@ public class RamChargeRunner : MonoBehaviour
         charging = false;
         currentAbility = null;
         currentClassController = null;
+    }
+
+    private void PlayChargeAnimation()
+    {
+        if (animator == null)
+            return;
+
+        if (currentAbility == null)
+            return;
+
+        if (string.IsNullOrWhiteSpace(currentAbility.chargeAnimationTrigger))
+            return;
+
+        animator.SetTrigger(currentAbility.chargeAnimationTrigger);
     }
 
     private void CheckOverlapHits()

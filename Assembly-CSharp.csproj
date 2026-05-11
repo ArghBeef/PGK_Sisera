@@ -61,16 +61,20 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.3.10f1\Editor\Data\Tools\BuildPipeline\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Abilities\Crow\CrowAllyAttackUltimate.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCTaunt.cs" />
     <Compile Include="Assets\Scripts\BreakableObject.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCMutualDialogueTrigger.cs" />
+    <Compile Include="Assets\Scripts\Abilities\Crow\CrowGroupAbility.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableCarHorn.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableDoor.cs" />
+    <Compile Include="Assets\Scripts\Abilities\Crow\CrowCloneAbility.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueMemory.cs" />
     <Compile Include="Assets\Scripts\Abilities\Ram\RamCharge.cs" />
     <Compile Include="Assets\Scripts\Abilities\Ram\RamShield.cs" />
     <Compile Include="Assets\Scripts\Weapon\WeaponBullet.cs" />
     <Compile Include="Assets\Scripts\Interactables\InterctableButton.cs" />
+    <Compile Include="Assets\Scripts\NPC\NPCWeaponShooter.cs" />
     <Compile Include="Assets\Scripts\PlayerInteractor.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableItemPickup.cs" />
     <Compile Include="Assets\Scripts\UI\HealthBar.cs" />
@@ -105,6 +109,7 @@
     <Compile Include="Assets\Scripts\Weapon\PlayerWeaponContoller.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDetectionVisualizer.cs" />
     <Compile Include="Assets\Scripts\DragObject.cs" />
+    <Compile Include="Assets\Scripts\Abilities\Crow\CrowCloneController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
