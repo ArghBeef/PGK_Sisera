@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6bf91cc5b0648458935181846fe9cd, type: 3}
   m_Name: Ability_CrowAllyAttack
   m_EditorClassIdentifier: Assembly-CSharp::CrowAllyAttackUltimate
-  abilityName: Crow Kill
-  description: Select NPC to attack his nearby ally
-  icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  abilityName: 
+  description: 
+  icon: {fileID: 0}
   cooldown: 5
-  maxSelectDistance: 40
+  maxSelectDistance: 150
   allySearchRadius: 8
-  damage: 100
+  damage: 150
   npcLayers:
     serializedVersion: 2
     m_Bits: 512

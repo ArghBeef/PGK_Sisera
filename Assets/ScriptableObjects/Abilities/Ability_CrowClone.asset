@@ -12,9 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a118c68d6c248804c9242b3fd7ac24af, type: 3}
   m_Name: Ability_CrowClone
   m_EditorClassIdentifier: Assembly-CSharp::CrowCloneAbility
-  abilityName: 
-  description: 
-  icon: {fileID: 0}
+  abilityName: Crow Clone
+  description: Creates a crow clone. Pressing this skill again teleports you back
+    to the crow clone
+  icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   cooldown: 5
-  clonePrefab: {fileID: 0}
-  spawnDistance: 1.5
+  previewPrefab: {fileID: 3646069235623117189, guid: ca0df88a8776cd94ca7828d3a77d0fc9, type: 3}
+  placementLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  maxPlacementDistance: 140
+  alignToGroundNormal: 1
+  clonePrefab: {fileID: 2938347206140509572, guid: 877519391159b3d45870442dd4efcbf9, type: 3}
+  placeCooldown: 3
+  teleportCooldown: 1

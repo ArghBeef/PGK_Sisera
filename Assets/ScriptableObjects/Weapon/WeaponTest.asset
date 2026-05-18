@@ -19,7 +19,7 @@ MonoBehaviour:
   fireRate: 15
   damage: 10
   magazineSize: 12
-  magazines: 3
+  magazines: 6
   reloadTime: 1.5
   range: 25
   bulletsPerShot: 5

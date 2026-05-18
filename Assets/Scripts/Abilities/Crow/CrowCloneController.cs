@@ -4,43 +4,69 @@ public class CrowCloneController : MonoBehaviour
 {
     private GameObject activeClone;
 
-    public void UseCloneAbility(CrowCloneAbility ability)
+    private float placeCooldownTimer;
+    private float teleportCooldownTimer;
+
+    public bool HasClone => activeClone != null;
+    public bool CanPlaceClone => placeCooldownTimer <= 0f && activeClone == null;
+    public bool CanTeleportToClone => teleportCooldownTimer <= 0f && activeClone != null;
+
+    private void Update()
     {
+        placeCooldownTimer -= Time.deltaTime;
+        teleportCooldownTimer -= Time.deltaTime;
+
         if (activeClone == null)
-        {
-            SpawnClone(ability);
-        }
-        else
-        {
-            TeleportBack();
-        }
+            return;
+
+        Health cloneHealth = activeClone.GetComponent<Health>();
+
+        if (cloneHealth != null && cloneHealth.IsDead)
+            activeClone = null;
     }
 
-    private void SpawnClone(CrowCloneAbility ability)
+    public void PlaceClone(
+        CrowCloneAbility ability,
+        Vector3 point,
+        Quaternion rotation)
     {
-        Vector3 direction = transform.forward;
+        if (ability == null)
+            return;
 
-        PC_Movement movement = GetComponent<PC_Movement>();
-        if (movement != null)
-            direction = movement.FacingDirection;
+        if (activeClone != null)
+            return;
 
-        direction.y = 0f;
-        direction.Normalize();
+        if (placeCooldownTimer > 0f)
+            return;
 
-        Vector3 spawnPosition = transform.position + direction * ability.spawnDistance;
+        if (ability.clonePrefab == null)
+            return;
 
         activeClone = Instantiate(
             ability.clonePrefab,
-            spawnPosition,
-            transform.rotation
+            point,
+            rotation
         );
+
+        placeCooldownTimer = ability.placeCooldown;
     }
 
-    private void TeleportBack()
+    public void TeleportToClone(CrowCloneAbility ability)
     {
+        if (ability == null)
+            return;
+
+        if (activeClone == null)
+            return;
+
+        if (teleportCooldownTimer > 0f)
+            return;
+
         transform.position = activeClone.transform.position;
 
         Destroy(activeClone);
         activeClone = null;
+
+        teleportCooldownTimer = ability.teleportCooldown;
     }
 }

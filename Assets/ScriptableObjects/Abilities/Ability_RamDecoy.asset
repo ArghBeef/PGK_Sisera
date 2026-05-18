@@ -9,13 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bba59e8e81c208f4584e08f194858fab, type: 3}
-  m_Name: Ability_CrowGroup
-  m_EditorClassIdentifier: Assembly-CSharp::CrowGroupAbility
-  abilityName: Crow Distract
-  description: Summons a crow group to the selected area, NPC are getting alerted
-    to that area
-  icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Script: {fileID: 11500000, guid: 7a185dc15a3938a4b8fc29fa61213f5f, type: 3}
+  m_Name: Ability_RamDecoy
+  m_EditorClassIdentifier: Assembly-CSharp::RamDecoyAbility
+  abilityName: ram_decoy
+  description: 
+  icon: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
   cooldown: 5
   previewPrefab: {fileID: 3646069235623117189, guid: ca0df88a8776cd94ca7828d3a77d0fc9, type: 3}
   placementLayers:
@@ -23,4 +22,4 @@ MonoBehaviour:
     m_Bits: 64
   maxPlacementDistance: 120
   alignToGroundNormal: 1
-  crowGroupPrefab: {fileID: 2938347206140509572, guid: 877519391159b3d45870442dd4efcbf9, type: 3}
+  decoyPrefab: {fileID: 5261087686097304800, guid: cb9fabdebbe24a24481cc9d668b027b4, type: 3}

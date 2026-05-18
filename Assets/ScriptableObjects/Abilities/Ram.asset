@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ClassDefinition
   classId: 1
   displayName: Ram
-  activeAbility1: {fileID: 11400000, guid: 223eb9d7feb370548bc1752524b34929, type: 2}
-  activeAbility2: {fileID: 11400000, guid: 0e2afcfcef19308459b9c50daffe6cbc, type: 2}
-  ultimate: {fileID: 0}
+  activeAbility1: {fileID: 11400000, guid: f906cf0c4e793354d92c6583bba8f8f8, type: 2}
+  activeAbility2: {fileID: 11400000, guid: 6acb489e9bfd0e24ba1f15510334ebce, type: 2}
+  ultimate: {fileID: 11400000, guid: 8b4b66a7cfbe37e489ddba80825ec417, type: 2}
   damageHealsPlayer: 1
   damageHealPercent: 0.2
   stunnedEnemiesTakeMoreDamage: 1

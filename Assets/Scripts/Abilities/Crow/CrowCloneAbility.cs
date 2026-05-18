@@ -1,18 +1,26 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Ability_CrowClone", menuName = "Classes/Crow/Skill 1 - Crow Clone")]
-public class CrowCloneAbility : AbilityDefinition
+public class CrowCloneAbility : HoldTargetAbilityDefinition
 {
+    [Header("Clone")]
     public GameObject clonePrefab;
-    public float spawnDistance = 1.5f;
 
-    public override void Activate(GameObject user, PlayerClassController classController)
+    [Header("Cooldowns")]
+    public float placeCooldown = 6f;
+    public float teleportCooldown = 3f;
+
+    public override void ActivateAtPoint(
+        GameObject user,
+        PlayerClassController classController,
+        Vector3 point,
+        Quaternion rotation)
     {
         CrowCloneController controller = user.GetComponent<CrowCloneController>();
 
         if (controller == null)
             controller = user.AddComponent<CrowCloneController>();
 
-        controller.UseCloneAbility(this);
+        controller.PlaceClone(this, point, rotation);
     }
 }

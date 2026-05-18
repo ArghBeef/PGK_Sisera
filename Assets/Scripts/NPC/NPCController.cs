@@ -44,6 +44,13 @@ public class NPCController : MonoBehaviour
     [SerializeField] private float targetHeight = 1f;
     [SerializeField] private LayerMask visionBlockLayers;
 
+    [Header("Suspicious Events")]
+    [SerializeField] private bool canReactToSuspiciousEvents = true;
+    [SerializeField] private float suspiciousStoppingDistance = 1.2f;
+    [SerializeField] private float suspiciousWaitTime = 3f;
+    [SerializeField] private float suspiciousInvestigationRadius = 3f;
+    [SerializeField] private float suspiciousHostileCheckRadius = 2f;
+
     [Header("Behaviour")]
     [SerializeField] private bool stopMovingWhenHostileDetected = true;
     [SerializeField] private bool lookAtDetectedTarget = true;
@@ -65,12 +72,28 @@ public class NPCController : MonoBehaviour
     private Transform currentLookTarget;
     private NPCDetectionState currentState = NPCDetectionState.None;
 
+    private bool isInvestigatingSuspiciousPlace;
+    private Vector3 suspiciousPlace;
+    private Vector3 suspiciousSourcePosition;
+    private float suspiciousWaitTimer;
+    private bool reachedSuspiciousPlace;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         agent.stoppingDistance = stoppingDistance;
 
         SetState(NPCDetectionState.None, null);
+    }
+
+    private void OnEnable()
+    {
+        NPCSuspiciousEventSystem.OnSuspiciousEvent += HandleSuspiciousEvent;
+    }
+
+    private void OnDisable()
+    {
+        NPCSuspiciousEventSystem.OnSuspiciousEvent -= HandleSuspiciousEvent;
     }
 
     private void Update()
@@ -84,7 +107,7 @@ public class NPCController : MonoBehaviour
 
     private void ScanDetectionBox()
     {
-        HashSet<Collider> currentlyInside = new();
+        HashSet<Collider> currentlyInside = new HashSet<Collider>();
 
         Vector3 center = transform.TransformPoint(detectionBoxOffset);
         Vector3 halfExtents = detectionBoxSize * 0.5f;
@@ -121,7 +144,7 @@ public class NPCController : MonoBehaviour
             }
         }
 
-        List<Collider> toRemove = new();
+        List<Collider> toRemove = new List<Collider>();
 
         foreach (var kvp in trackedTargets)
         {
@@ -171,6 +194,9 @@ public class NPCController : MonoBehaviour
 
     private bool CanSeeTarget(Collider target)
     {
+        if (target == null)
+            return false;
+
         Vector3 origin = eyePoint != null
             ? eyePoint.position
             : transform.position + Vector3.up * eyeHeight;
@@ -180,6 +206,9 @@ public class NPCController : MonoBehaviour
 
         Vector3 direction = targetPoint - origin;
         float distance = direction.magnitude;
+
+        if (distance <= 0.01f)
+            return true;
 
         if (Physics.Raycast(
             origin,
@@ -196,7 +225,6 @@ public class NPCController : MonoBehaviour
 
         return true;
     }
-
 
     private void ReactToTarget(DetectionProgress progress)
     {
@@ -225,6 +253,9 @@ public class NPCController : MonoBehaviour
 
     private void RefreshState()
     {
+        if (isInvestigatingSuspiciousPlace)
+            return;
+
         GameObject visible = GetVisibleTarget();
         GameObject detected = GetDetectedTarget();
         GameObject hostile = GetDetectedTarget(NPCReactionType.Hostile);
@@ -269,6 +300,128 @@ public class NPCController : MonoBehaviour
         }
     }
 
+    private void HandleSuspiciousEvent(Vector3 position, GameObject source, float radius, float waitTime)
+    {
+        if (!canReactToSuspiciousEvents)
+            return;
+
+        if (agent == null || !agent.enabled || !agent.isOnNavMesh)
+            return;
+
+        float distance = Vector3.Distance(transform.position, position);
+
+        if (distance > radius)
+            return;
+
+        Vector3 investigationTarget = GetRandomPointAroundSuspiciousPosition(position);
+
+        if (NavMesh.SamplePosition(investigationTarget, out NavMeshHit hit, 3f, NavMesh.AllAreas))
+        {
+            isInvestigatingSuspiciousPlace = true;
+            suspiciousSourcePosition = position;
+            suspiciousPlace = hit.position;
+            suspiciousWaitTimer = waitTime > 0f ? waitTime : suspiciousWaitTime;
+            reachedSuspiciousPlace = false;
+
+            waitingAtPoint = false;
+
+            agent.isStopped = false;
+            agent.stoppingDistance = suspiciousStoppingDistance;
+            agent.SetDestination(suspiciousPlace);
+
+            SetState(NPCDetectionState.Warning, source);
+        }
+    }
+
+    private Vector3 GetRandomPointAroundSuspiciousPosition(Vector3 position)
+    {
+        Vector3 randomOffset = Random.insideUnitSphere * suspiciousInvestigationRadius;
+        randomOffset.y = 0f;
+
+        return position + randomOffset;
+    }
+
+    private void UpdateSuspiciousMovement()
+    {
+        GameObject hostile = GetDetectedTarget(NPCReactionType.Hostile);
+
+        if (hostile == null)
+            hostile = GetHostileNearSuspiciousPlace();
+
+        if (hostile != null)
+        {
+            SetState(NPCDetectionState.Hostile, hostile);
+            isInvestigatingSuspiciousPlace = false;
+            reachedSuspiciousPlace = false;
+            agent.isStopped = true;
+            return;
+        }
+
+        agent.isStopped = false;
+
+        if (!reachedSuspiciousPlace)
+        {
+            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+            {
+                reachedSuspiciousPlace = true;
+                agent.isStopped = true;
+                SetState(NPCDetectionState.Warning, null);
+            }
+
+            return;
+        }
+
+        suspiciousWaitTimer -= Time.deltaTime;
+
+        if (suspiciousWaitTimer <= 0f)
+            FinishSuspiciousInvestigation();
+    }
+
+    private GameObject GetHostileNearSuspiciousPlace()
+    {
+        Collider[] hits = Physics.OverlapSphere(
+            suspiciousSourcePosition,
+            suspiciousHostileCheckRadius,
+            targetLayers,
+            QueryTriggerInteraction.Ignore
+        );
+
+        foreach (Collider hit in hits)
+        {
+            if (hit == null)
+                continue;
+
+            if (hit.transform.root == transform.root)
+                continue;
+
+            NPCTagDetection rule = GetRuleForTag(hit.tag);
+
+            if (rule == null)
+                continue;
+
+            if (rule.reactionType != NPCReactionType.Hostile)
+                continue;
+
+            if (!CanSeeTarget(hit))
+                continue;
+
+            return hit.gameObject;
+        }
+
+        return null;
+    }
+
+    private void FinishSuspiciousInvestigation()
+    {
+        isInvestigatingSuspiciousPlace = false;
+        reachedSuspiciousPlace = false;
+
+        agent.isStopped = false;
+        agent.stoppingDistance = stoppingDistance;
+
+        SetState(NPCDetectionState.None, null);
+    }
+
     private GameObject GetVisibleTarget()
     {
         foreach (var kvp in trackedTargets)
@@ -276,6 +429,7 @@ public class NPCController : MonoBehaviour
             if (kvp.Value.target != null && CanSeeTarget(kvp.Value.target))
                 return kvp.Value.target.gameObject;
         }
+
         return null;
     }
 
@@ -283,7 +437,7 @@ public class NPCController : MonoBehaviour
     {
         foreach (var kvp in trackedTargets)
         {
-            var p = kvp.Value;
+            DetectionProgress p = kvp.Value;
 
             if (p.target != null &&
                 p.detected &&
@@ -293,6 +447,7 @@ public class NPCController : MonoBehaviour
                 return p.target.gameObject;
             }
         }
+
         return null;
     }
 
@@ -303,11 +458,18 @@ public class NPCController : MonoBehaviour
             if (rule != null && rule.targetTag == tagToCheck)
                 return rule;
         }
+
         return null;
     }
 
     private void UpdateMovement()
     {
+        if (isInvestigatingSuspiciousPlace)
+        {
+            UpdateSuspiciousMovement();
+            return;
+        }
+
         if (stopMovingWhenHostileDetected && GetDetectedTarget(NPCReactionType.Hostile) != null)
         {
             agent.isStopped = true;
@@ -315,6 +477,7 @@ public class NPCController : MonoBehaviour
         }
 
         agent.isStopped = false;
+        agent.stoppingDistance = stoppingDistance;
 
         if (!canWander)
             return;
@@ -374,5 +537,15 @@ public class NPCController : MonoBehaviour
 
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, wanderRadius);
+
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position, suspiciousInvestigationRadius);
+
+        Vector3 eye = eyePoint != null
+            ? eyePoint.position
+            : transform.position + Vector3.up * eyeHeight;
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(eye, 0.1f);
     }
 }
