@@ -68,6 +68,7 @@
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCMutualDialogueTrigger.cs" />
     <Compile Include="Assets\Scripts\DestroyAfterTime.cs" />
     <Compile Include="Assets\Scripts\Abilities\Ram\RamDecoyAbility.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuSelectable.cs" />
     <Compile Include="Assets\Scripts\Abilities\Crow\CrowGroupAbility.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableCarHorn.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableDoor.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Assets\Scripts\Weapon\WeaponBullet.cs" />
     <Compile Include="Assets\Scripts\Interactables\InterctableButton.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCWeaponShooter.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuCamera.cs" />
     <Compile Include="Assets\Scripts\PlayerInteractor.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableItemPickup.cs" />
     <Compile Include="Assets\Scripts\UI\HealthBar.cs" />
@@ -101,16 +103,19 @@
     <Compile Include="Assets\Scripts\CameraFade.cs" />
     <Compile Include="Assets\Scripts\MaskingSystem.cs" />
     <Compile Include="Assets\ScriptableObjects\Item\ItemCategory.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuController.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCStatus.cs" />
     <Compile Include="Assets\Scripts\SuspiciousSource.cs" />
     <Compile Include="Assets\Scripts\IDamageable.cs" />
     <Compile Include="Assets\ScriptableObjects\Item\ItemDefinition.cs" />
     <Compile Include="Assets\ScriptableObjects\Abilities\ClassDefinition.cs" />
+    <Compile Include="Assets\Scripts\UI\WorldHealthBar.cs" />
     <Compile Include="Assets\Scripts\FadeableObject.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCTagDetection.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableLampToggle.cs" />
     <Compile Include="Assets\Scripts\CameraFollow.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCController.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuUI.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueEntry.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCIdentity.cs" />
     <Compile Include="Assets\Scripts\Weapon\PlayerWeaponContoller.cs" />
