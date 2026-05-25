@@ -16,16 +16,16 @@ MonoBehaviour:
   displayName: Test Weapon
   description: Test Weapon
   icon: {fileID: 21300000, guid: 59d26e5672bcb614c90e07957d3f6985, type: 3}
-  fireRate: 15
-  damage: 10
+  fireRate: 12
+  damage: 5
   magazineSize: 12
   magazines: 6
   reloadTime: 1.5
   range: 25
-  bulletsPerShot: 5
-  spread: 25
+  bulletsPerShot: 3
+  spread: 5
   bulletPrefab: {fileID: 6185062862229346539, guid: 32f09e11e9f67cc4283ef6e38625cf2f, type: 3}
-  bulletSpeed: 35
+  bulletSpeed: 45
   muzzleFlashPrefab: {fileID: 0}
   hitEffectPrefab: {fileID: 0}
   shootSfx: {fileID: 8300000, guid: c140b0eeb18db48489ad1c900cdea5ec, type: 3}

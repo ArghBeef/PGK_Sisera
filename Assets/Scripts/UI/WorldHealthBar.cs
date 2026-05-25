@@ -5,11 +5,9 @@ public class WorldHealthBarUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Health health;
-    [SerializeField] private Canvas canvas;
     [SerializeField] private Slider healthSlider;
 
     [Header("Behaviour")]
-    [SerializeField] private bool billboardToCamera = true;
     [SerializeField] private float hideAfterSeconds = 2f;
     [SerializeField] private bool hideOnDeath = true;
 
@@ -22,11 +20,8 @@ public class WorldHealthBarUI : MonoBehaviour
         if (health == null)
             health = GetComponentInParent<Health>();
 
-        if (canvas == null)
-            canvas = GetComponentInChildren<Canvas>();
-
         if (healthSlider == null)
-            healthSlider = GetComponentInChildren<Slider>();
+            healthSlider = GetComponentInChildren<Slider>(true);
 
         HideInstant();
         UpdateSlider();
@@ -66,17 +61,12 @@ public class WorldHealthBarUI : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!billboardToCamera || !visible)
-            return;
 
         if (cachedCamera == null)
             cachedCamera = Camera.main;
 
         if (cachedCamera == null)
             return;
-
-        Vector3 direction = transform.position - cachedCamera.transform.position;
-        transform.rotation = Quaternion.LookRotation(direction);
     }
 
     private void HandleHealthChanged(float currentHealth, float maxHealth, float changeAmount)
@@ -112,9 +102,6 @@ public class WorldHealthBarUI : MonoBehaviour
         visible = true;
         hideTimer = hideAfterSeconds;
 
-        if (canvas != null)
-            canvas.enabled = true;
-
         if (healthSlider != null)
             healthSlider.gameObject.SetActive(true);
     }
@@ -122,9 +109,6 @@ public class WorldHealthBarUI : MonoBehaviour
     private void HideInstant()
     {
         visible = false;
-
-        if (canvas != null)
-            canvas.enabled = false;
 
         if (healthSlider != null)
             healthSlider.gameObject.SetActive(false);

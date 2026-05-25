@@ -15,37 +15,11 @@ public class NPCDetectionVisualizer : MonoBehaviour
     [SerializeField] private GameObject detectedSign;
     [SerializeField] private GameObject hostileSign;
 
-    [Header("Optional")]
-    [SerializeField] private bool billboardToCamera = true;
-    [SerializeField] private Transform targetCamera;
-
     private SignState currentState = SignState.None;
 
     private void Awake()
     {
         SetState(SignState.None);
-    }
-
-    private void LateUpdate()
-    {
-        if (!billboardToCamera)
-            return;
-
-        Camera cam = null;
-
-        if (targetCamera != null)
-        {
-            cam = targetCamera.GetComponent<Camera>();
-        }
-
-        if (cam == null)
-            cam = Camera.main;
-
-        if (cam == null)
-            return;
-
-        Vector3 direction = transform.position - cam.transform.position;
-        transform.rotation = Quaternion.LookRotation(direction);
     }
 
     public void SetState(SignState newState)
