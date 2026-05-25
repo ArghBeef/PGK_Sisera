@@ -31,18 +31,18 @@ public class RamChargeAbility : AbilityDefinition
         if (runner == null)
             runner = user.AddComponent<RamChargeRunner>();
 
-        runner.StartCharge(this, classController);
+        runner.StartCharge(this);
     }
 }
 
 public class RamChargeRunner : MonoBehaviour
 {
     private bool charging;
+
     private Rigidbody rb;
     private Animator animator;
 
     private RamChargeAbility currentAbility;
-    private PlayerClassController currentClassController;
     private Vector3 currentDirection;
 
     private readonly HashSet<GameObject> hitObjects = new();
@@ -53,13 +53,12 @@ public class RamChargeRunner : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
     }
 
-    public void StartCharge(RamChargeAbility ability, PlayerClassController classController)
+    public void StartCharge(RamChargeAbility ability)
     {
         if (charging)
             return;
 
         currentAbility = ability;
-        currentClassController = classController;
 
         StartCoroutine(ChargeRoutine());
     }
@@ -67,6 +66,7 @@ public class RamChargeRunner : MonoBehaviour
     private IEnumerator ChargeRoutine()
     {
         charging = true;
+
         hitObjects.Clear();
 
         if (rb == null)
@@ -101,14 +101,13 @@ public class RamChargeRunner : MonoBehaviour
                 currentDirection,
                 out RaycastHit wallHit,
                 step + currentAbility.wallCheckExtraDistance,
-                currentAbility.obstacleLayers
-            ))
+                currentAbility.obstacleLayers,
+                QueryTriggerInteraction.Ignore))
             {
                 break;
             }
 
-            Vector3 targetPosition = rb.position + currentDirection * step;
-            rb.MovePosition(targetPosition);
+            rb.MovePosition(rb.position + currentDirection * step);
 
             CheckOverlapHits();
 
@@ -117,11 +116,14 @@ public class RamChargeRunner : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
 
-        rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
+        rb.linearVelocity = new Vector3(
+            0f,
+            rb.linearVelocity.y,
+            0f
+        );
 
         charging = false;
         currentAbility = null;
-        currentClassController = null;
     }
 
     private void PlayChargeAnimation()
@@ -143,7 +145,8 @@ public class RamChargeRunner : MonoBehaviour
         Collider[] hits = Physics.OverlapSphere(
             transform.position,
             currentAbility.radius,
-            currentAbility.hitLayers
+            currentAbility.hitLayers,
+            QueryTriggerInteraction.Ignore
         );
 
         foreach (Collider hit in hits)
@@ -179,6 +182,9 @@ public class RamChargeRunner : MonoBehaviour
 
     private void HandleHit(Collider hit)
     {
+        if (hit == null || currentAbility == null)
+            return;
+
         if (hit.transform.root == transform.root)
             return;
 
@@ -191,41 +197,66 @@ public class RamChargeRunner : MonoBehaviour
         if (firstHit)
             hitObjects.Add(hitRoot);
 
-        Rigidbody targetRb = hit.GetComponentInParent<Rigidbody>();
-
-        if (targetRb != null && targetRb != rb)
-        {
-            Vector3 pushDirection = currentDirection;
-            pushDirection.y = 0.25f;
-            pushDirection.Normalize();
-
-            targetRb.AddForce(
-                pushDirection * currentAbility.pushForce,
-                ForceMode.Impulse
-            );
-        }
+        PushRigidbody(hit);
 
         if (!firstHit)
             return;
 
+        ApplyDamage(hit);
+        ApplyStun(hit);
+        BreakObject(hit);
+    }
+
+    private void PushRigidbody(Collider hit)
+    {
+        Rigidbody targetRb = hit.attachedRigidbody;
+
+        if (targetRb == null)
+            targetRb = hit.GetComponentInParent<Rigidbody>();
+
+        if (targetRb == null)
+            return;
+
+        if (targetRb == rb)
+            return;
+
+        if (targetRb.isKinematic)
+            return;
+
+        Vector3 pushDirection = currentDirection;
+
+        pushDirection.y = 0.25f;
+        pushDirection.Normalize();
+
+        targetRb.AddForce(
+            pushDirection * currentAbility.pushForce,
+            ForceMode.Impulse
+        );
+    }
+
+    private void ApplyDamage(Collider hit)
+    {
         IDamageable damageable = hit.GetComponentInParent<IDamageable>();
 
-        if (damageable != null)
-        {
-            float finalDamage = currentAbility.damage;
+        if (damageable == null)
+            return;
 
-            if (currentClassController != null)
-                finalDamage *= currentClassController.GetDamageMultiplierAgainst(hit.gameObject);
+        damageable.TakeDamage(currentAbility.damage);
+    }
 
-            damageable.TakeDamage(finalDamage);
-        }
-
-        NPCStatus status = hit.GetComponentInParent<NPCStatus>();
+    private void ApplyStun(Collider hit)
+    {
+        StatusEffectController status =
+            hit.GetComponentInParent<StatusEffectController>();
 
         if (status != null)
             status.Stun(currentAbility.stunDuration);
+    }
 
-        BreakableObject breakable = hit.GetComponentInParent<BreakableObject>();
+    private void BreakObject(Collider hit)
+    {
+        BreakableObject breakable =
+            hit.GetComponentInParent<BreakableObject>();
 
         if (breakable != null)
             breakable.Break();

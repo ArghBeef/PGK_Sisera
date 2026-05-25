@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -23,9 +24,7 @@ public class Health : MonoBehaviour, IDamageable
     public UnityEvent<float> onHealed;
     public UnityEvent onDeath;
 
-    public System.Action<float, float, float> OnHealthChanged;
-    public System.Action<float> OnDamageTaken;
-    public System.Action<float> OnHealedAmount;
+    public event Action<float, float, float> OnHealthChanged;
 
     private bool dead;
 
@@ -42,21 +41,44 @@ public class Health : MonoBehaviour, IDamageable
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
     }
 
+    private void Start()
+    {
+        OnHealthChanged?.Invoke(currentHealth, maxHealth, 0f);
+    }
+
     public void TakeDamage(float damage)
     {
-        if (dead || damage <= 0f)
+        if (dead)
             return;
+
+        if (damage <= 0f)
+            return;
+
+        RamShieldDamageRedirect redirect = GetComponent<RamShieldDamageRedirect>();
+
+        if (redirect == null)
+            redirect = GetComponentInParent<RamShieldDamageRedirect>();
+
+        if (redirect != null && redirect.TryRedirectDamage(damage))
+            return;
+
+        StatusEffectController status = GetComponent<StatusEffectController>();
+
+        if (status == null)
+            status = GetComponentInParent<StatusEffectController>();
+
+        if (status != null)
+            damage *= status.DamageMultiplier;
 
         float oldHealth = currentHealth;
 
         currentHealth -= damage;
         currentHealth = Mathf.Max(currentHealth, 0f);
 
-        float realDamage = oldHealth - currentHealth;
+        float change = currentHealth - oldHealth;
 
-        onDamaged?.Invoke(realDamage);
-        OnDamageTaken?.Invoke(realDamage);
-        OnHealthChanged?.Invoke(currentHealth, maxHealth, -realDamage);
+        onDamaged?.Invoke(damage);
+        OnHealthChanged?.Invoke(currentHealth, maxHealth, change);
 
         if (currentHealth <= 0f)
             Die();
@@ -64,7 +86,10 @@ public class Health : MonoBehaviour, IDamageable
 
     public void Heal(float amount)
     {
-        if (dead || amount <= 0f)
+        if (dead)
+            return;
+
+        if (amount <= 0f)
             return;
 
         float oldHealth = currentHealth;
@@ -72,11 +97,10 @@ public class Health : MonoBehaviour, IDamageable
         currentHealth += amount;
         currentHealth = Mathf.Min(currentHealth, maxHealth);
 
-        float realHeal = currentHealth - oldHealth;
+        float change = currentHealth - oldHealth;
 
-        onHealed?.Invoke(realHeal);
-        OnHealedAmount?.Invoke(realHeal);
-        OnHealthChanged?.Invoke(currentHealth, maxHealth, realHeal);
+        onHealed?.Invoke(amount);
+        OnHealthChanged?.Invoke(currentHealth, maxHealth, change);
     }
 
     public void Kill()
@@ -88,8 +112,7 @@ public class Health : MonoBehaviour, IDamageable
 
         currentHealth = 0f;
 
-        OnDamageTaken?.Invoke(oldHealth);
-        OnHealthChanged?.Invoke(currentHealth, maxHealth, -oldHealth);
+        OnHealthChanged?.Invoke(currentHealth, maxHealth, currentHealth - oldHealth);
 
         Die();
     }

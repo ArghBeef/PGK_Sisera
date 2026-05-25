@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b501a52abaaeb5b46af002ac8f8d45d0, type: 3}
-  m_Name: Ram
+  m_Name: Crow
   m_EditorClassIdentifier: Assembly-CSharp::ClassDefinition
-  activeAbility1: {fileID: 11400000, guid: 223eb9d7feb370548bc1752524b34929, type: 2}
-  activeAbility2: {fileID: 11400000, guid: 0e2afcfcef19308459b9c50daffe6cbc, type: 2}
-  ultimate: {fileID: 11400000, guid: 8b4b66a7cfbe37e489ddba80825ec417, type: 2}
+  activeAbility1: {fileID: 11400000, guid: f906cf0c4e793354d92c6583bba8f8f8, type: 2}
+  activeAbility2: {fileID: 11400000, guid: 6acb489e9bfd0e24ba1f15510334ebce, type: 2}
+  ultimate: {fileID: 11400000, guid: 82ac3f2cefc791842b0285630165693c, type: 2}
   passiveAbilities:
-  - {fileID: 11400000, guid: 6765ae01e2a4a124a83ec8c13e2ff402, type: 2}
+  - {fileID: 11400000, guid: da0ace633f5481647accaff2259d59aa, type: 2}

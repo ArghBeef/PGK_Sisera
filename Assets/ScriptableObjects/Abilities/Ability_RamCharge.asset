@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77f90a94f100eae4eaa6167a65931c7a, type: 3}
   m_Name: Ability_RamCharge
   m_EditorClassIdentifier: Assembly-CSharp::RamCharge
-  abilityName: 
+  abilityName: RamCharge
   description: 
-  icon: {fileID: 0}
-  cooldown: 0
+  icon: {fileID: 21300000, guid: eb314d4402a7a3846a3311d9de24c392, type: 3}
+  cooldown: 5
   chargeDistance: 8
   chargeSpeed: 35
   radius: 0.5

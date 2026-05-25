@@ -25,6 +25,16 @@ public class PlayerClassController : MonoBehaviour
 
     public ClassDefinition CurrentClass => currentClass;
 
+    private void Awake()
+    {
+        ApplyPassives();
+    }
+
+    private void OnDestroy()
+    {
+        RemovePassives();
+    }
+
     private void OnEnable()
     {
         EnableAction(ability1Action);
@@ -293,27 +303,64 @@ public class PlayerClassController : MonoBehaviour
         hasValidPlacement = false;
     }
 
-    public float GetDamageMultiplierAgainst(GameObject target)
+    private void ApplyPassives()
     {
         if (currentClass == null)
-            return 1f;
-
-        NPCStatus status = target.GetComponent<NPCStatus>();
-
-        if (currentClass.stunnedEnemiesTakeMoreDamage && status != null && status.IsStunned)
-            return currentClass.stunnedDamageMultiplier;
-
-        return 1f;
-    }
-
-    public void HealFromDamage(float incomingDamage)
-    {
-        if (currentClass == null || !currentClass.damageHealsPlayer)
             return;
 
-        Health health = GetComponent<Health>();
+        if (currentClass.passiveAbilities == null)
+            return;
 
-        if (health != null)
-            health.Heal(incomingDamage * currentClass.damageHealPercent);
+        foreach (PassiveAbilityDefinition passive in currentClass.passiveAbilities)
+        {
+            if (passive != null)
+                passive.Apply(gameObject, this);
+        }
+    }
+
+    private void RemovePassives()
+    {
+        if (currentClass == null)
+            return;
+
+        if (currentClass.passiveAbilities == null)
+            return;
+
+        foreach (PassiveAbilityDefinition passive in currentClass.passiveAbilities)
+        {
+            if (passive != null)
+                passive.Remove(gameObject, this);
+        }
+    }
+
+    public AbilityDefinition GetAbility(int index)
+    {
+        if (currentClass == null)
+            return null;
+
+        if (index == 0)
+            return currentClass.activeAbility1;
+
+        if (index == 1)
+            return currentClass.activeAbility2;
+
+        if (index == 2)
+            return currentClass.ultimate;
+
+        return null;
+    }
+
+    public float GetCooldownTimer(int index)
+    {
+        if (index == 0)
+            return ability1Cooldown;
+
+        if (index == 1)
+            return ability2Cooldown;
+
+        if (index == 2)
+            return ultimateCooldown;
+
+        return 0f;
     }
 }
