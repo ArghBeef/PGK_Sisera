@@ -19,6 +19,10 @@ Shader "Custom/URP/HalftoneToon_Emissive"
         _PulseAmount ("Pulse Amount", Range(0,1)) = 0.4
         _VibrateSpeed ("Vibrate Speed", Float) = 40
         _VibrateAmount ("Vibrate Amount", Range(0,0.05)) = 0.01
+
+        _Ambient ("Minimum Ambient Light", Range(0,1)) = 0.25
+        _LightStrength ("Main Light Strength", Range(0,3)) = 1
+        _AdditionalLightsStrength ("Point/Spot Lights Strength", Range(0,3)) = 1
     }
 
     SubShader
@@ -36,12 +40,16 @@ Shader "Custom/URP/HalftoneToon_Emissive"
             Tags { "LightMode"="UniversalForward" }
 
             HLSLPROGRAM
+            #pragma target 3.5
             #pragma vertex vert
             #pragma fragment frag
 
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile _ _SHADOWS_SOFT
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS
+            #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
@@ -55,18 +63,17 @@ Shader "Custom/URP/HalftoneToon_Emissive"
             CBUFFER_START(UnityPerMaterial)
                 float4 _MainTex_ST;
                 float4 _EmissionMask_ST;
-
                 float4 _BaseColor;
                 float4 _ShadowColor;
-
                 float _DotScale;
                 float _DotStrength;
                 float _Threshold;
                 float _Softness;
-
+                float _Ambient;
+                float _LightStrength;
+                float _AdditionalLightsStrength;
                 float4 _EmissionColor;
                 float _EmissionStrength;
-
                 float _PulseSpeed;
                 float _PulseAmount;
                 float _VibrateSpeed;
@@ -87,23 +94,16 @@ Shader "Custom/URP/HalftoneToon_Emissive"
                 float3 normalWS : TEXCOORD1;
                 float2 uv : TEXCOORD2;
                 float2 emissionUV : TEXCOORD3;
+                float4 shadowCoord : TEXCOORD4;
             };
 
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
-
                 float3 positionOS = IN.positionOS.xyz;
-
-                // Tiny vertex vibration only on glowing parts
                 float2 emissionUV = TRANSFORM_TEX(IN.uv, _EmissionMask);
                 float mask = SAMPLE_TEXTURE2D_LOD(_EmissionMask, sampler_EmissionMask, emissionUV, 0).r;
-
-                float vibration =
-                    sin(_Time.y * _VibrateSpeed + positionOS.x * 30 + positionOS.y * 20)
-                    * _VibrateAmount
-                    * mask;
-
+                float vibration = sin(_Time.y * _VibrateSpeed + positionOS.x * 30 + positionOS.y * 20) * _VibrateAmount * mask;
                 positionOS += IN.normalOS * vibration;
 
                 OUT.positionWS = TransformObjectToWorld(positionOS);
@@ -111,34 +111,51 @@ Shader "Custom/URP/HalftoneToon_Emissive"
                 OUT.normalWS = TransformObjectToWorldNormal(IN.normalOS);
                 OUT.uv = TRANSFORM_TEX(IN.uv, _MainTex);
                 OUT.emissionUV = emissionUV;
-
+                OUT.shadowCoord = TransformWorldToShadowCoord(OUT.positionWS);
                 return OUT;
             }
 
-            float stableDots(float2 uv)
+            float StableDots(float2 uv)
             {
                 float2 cell = frac(uv) - 0.5;
                 return length(cell);
             }
 
-            half4 frag(Varyings IN) : SV_Target
+            float3 GetStylizedLight(float3 positionWS, float3 normalWS, float4 shadowCoord, out float lightAmount)
             {
-                float3 baseTex = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv).rgb;
-                baseTex *= _BaseColor.rgb;
-
-                float3 normalWS = normalize(IN.normalWS);
-
-                float4 shadowCoord = TransformWorldToShadowCoord(IN.positionWS);
                 Light mainLight = GetMainLight(shadowCoord);
 
-                float lightAmount = saturate(dot(normalWS, mainLight.direction));
-                lightAmount *= mainLight.shadowAttenuation;
+                float mainNdotL = saturate(dot(normalWS, mainLight.direction));
+                float mainLit = mainNdotL * mainLight.shadowAttenuation * mainLight.distanceAttenuation;
 
-                float toon = smoothstep(
-                    _Threshold - _Softness,
-                    _Threshold + _Softness,
-                    lightAmount
-                );
+                float3 lightColor = mainLight.color * mainLit * _LightStrength;
+                float totalLight = mainLit * _LightStrength;
+
+                #if defined(_ADDITIONAL_LIGHTS)
+                    uint pixelLightCount = GetAdditionalLightsCount();
+                    for (uint i = 0u; i < pixelLightCount; i++)
+                    {
+                        Light light = GetAdditionalLight(i, positionWS);
+                        float ndotl = saturate(dot(normalWS, light.direction));
+                        float attenuated = ndotl * light.distanceAttenuation * light.shadowAttenuation;
+                        lightColor += light.color * attenuated * _AdditionalLightsStrength;
+                        totalLight += attenuated * _AdditionalLightsStrength;
+                    }
+                #endif
+
+                lightAmount = saturate(totalLight + _Ambient);
+                return max(lightColor, _Ambient.xxx);
+            }
+
+            half4 frag(Varyings IN) : SV_Target
+            {
+                float3 baseTex = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv).rgb * _BaseColor.rgb;
+                float3 normalWS = normalize(IN.normalWS);
+
+                float lightAmount;
+                float3 lightColor = GetStylizedLight(IN.positionWS, normalWS, IN.shadowCoord, lightAmount);
+
+                float toon = smoothstep(_Threshold - _Softness, _Threshold + _Softness, lightAmount);
 
                 float3 absNormal = abs(normalWS);
                 float2 dotUV;
@@ -150,36 +167,23 @@ Shader "Custom/URP/HalftoneToon_Emissive"
                 else
                     dotUV = IN.positionWS.xy;
 
-                float dotPattern = stableDots(dotUV * _DotScale);
-
+                float dotPattern = StableDots(dotUV * _DotScale);
                 float shadowAmount = 1.0 - lightAmount;
                 float dotSize = lerp(0.04, 0.32, shadowAmount * _DotStrength);
-
                 float dots = 1.0 - smoothstep(dotSize, dotSize + 0.08, dotPattern);
-
                 float shadowMask = saturate((1.0 - toon) + dots * shadowAmount * _DotStrength);
 
+                float3 litColor = baseTex * lightColor;
                 float3 shadowedColor = baseTex * _ShadowColor.rgb;
-                float3 finalColor = lerp(baseTex, shadowedColor, shadowMask);
+                float3 finalColor = lerp(litColor, shadowedColor, shadowMask);
 
-                // Emission / glowing eyes
-                float emissionMask = SAMPLE_TEXTURE2D(_EmissionMask, sampler_EmissionMask, IN.emissionUV).r;
-
-                float pulse =
-                    1.0 + sin(_Time.y * _PulseSpeed) * _PulseAmount;
-
-                float flicker =
-                    1.0 + sin(_Time.y * _VibrateSpeed) * 0.08;
-
-                float emissionPower = _EmissionStrength * pulse * flicker;
-
-                float3 emission = _EmissionColor.rgb * emissionPower * emissionMask;
-
-                finalColor += emission;
+                float emissionMask = saturate(SAMPLE_TEXTURE2D(_EmissionMask, sampler_EmissionMask, IN.emissionUV).r);
+                float pulse = 1.0 + sin(_Time.y * _PulseSpeed) * _PulseAmount;
+                float flicker = 1.0 + sin(_Time.y * _VibrateSpeed) * 0.08;
+                finalColor += _EmissionColor.rgb * _EmissionStrength * pulse * flicker * emissionMask;
 
                 return half4(finalColor, 1);
             }
-
             ENDHLSL
         }
 
@@ -187,7 +191,6 @@ Shader "Custom/URP/HalftoneToon_Emissive"
         {
             Name "ShadowCaster"
             Tags { "LightMode"="ShadowCaster" }
-
             ZWrite On
             ZTest LEqual
             ColorMask 0
@@ -195,19 +198,10 @@ Shader "Custom/URP/HalftoneToon_Emissive"
             HLSLPROGRAM
             #pragma vertex ShadowPassVertex
             #pragma fragment ShadowPassFragment
-
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-            struct Attributes
-            {
-                float4 positionOS : POSITION;
-                float3 normalOS : NORMAL;
-            };
-
-            struct Varyings
-            {
-                float4 positionHCS : SV_POSITION;
-            };
+            struct Attributes { float4 positionOS : POSITION; float3 normalOS : NORMAL; };
+            struct Varyings { float4 positionHCS : SV_POSITION; };
 
             Varyings ShadowPassVertex(Attributes IN)
             {
@@ -217,11 +211,7 @@ Shader "Custom/URP/HalftoneToon_Emissive"
                 return OUT;
             }
 
-            half4 ShadowPassFragment(Varyings IN) : SV_TARGET
-            {
-                return 0;
-            }
-
+            half4 ShadowPassFragment(Varyings IN) : SV_TARGET { return 0; }
             ENDHLSL
         }
     }

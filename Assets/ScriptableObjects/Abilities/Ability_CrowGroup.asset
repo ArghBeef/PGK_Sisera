@@ -23,4 +23,4 @@ MonoBehaviour:
     m_Bits: 64
   maxPlacementDistance: 120
   alignToGroundNormal: 1
-  crowGroupPrefab: {fileID: 2938347206140509572, guid: 877519391159b3d45870442dd4efcbf9, type: 3}
+  crowGroupPrefab: {fileID: 2938347206140509572, guid: 34ec8be0dac5f09449374b4ec49c0bbf, type: 3}
