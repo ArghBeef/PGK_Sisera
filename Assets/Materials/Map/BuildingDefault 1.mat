@@ -83,6 +83,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
+    - _AdditionalLightsStrength: 1
     - _Alpha: 1
     - _AlphaClip: 0
     - _AlphaToMask: 0
@@ -107,6 +108,7 @@ Material:
     - _HatchScale: 5
     - _HatchStrength: 0.35
     - _HatchWidth: 0.25
+    - _LightStrength: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -127,7 +129,7 @@ Material:
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.83024055, g: 0.86415094, b: 0.8266501, a: 1}
+    - _BaseColor: {r: 0.34509805, g: 0.35686275, b: 0.42352945, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _HatchColor: {r: 0.049999982, g: 0.11999995, b: 0.049999982, a: 1}
