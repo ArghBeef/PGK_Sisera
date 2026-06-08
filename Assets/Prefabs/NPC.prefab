@@ -693,6 +693,7 @@ GameObject:
   - component: {fileID: 9034848258548830159}
   - component: {fileID: 711396067660563499}
   - component: {fileID: 4566361978121398357}
+  - component: {fileID: 2486976633079513037}
   m_Layer: 9
   m_Name: NPC
   m_TagString: NPC
@@ -1001,7 +1002,19 @@ MonoBehaviour:
       m_Calls: []
   onDeath:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2486976633079513037}
+        m_TargetAssemblyTypeName: PointReward, Assembly-CSharp
+        m_MethodName: GiveToPlayer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &9034848258548830159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1057,6 +1070,19 @@ MonoBehaviour:
   disableOnStun:
   - {fileID: 3247159527069666864}
   stopNavMeshAgentWhileStunned: 1
+--- !u!114 &2486976633079513037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7721923480478965062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db0bdc41c790d2e4d9ae094c41ba726f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PointReward
+  points: 65
 --- !u!1 &8050257069624048086
 GameObject:
   m_ObjectHideFlags: 0

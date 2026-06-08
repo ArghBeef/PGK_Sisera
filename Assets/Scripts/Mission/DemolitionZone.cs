@@ -24,6 +24,8 @@ public class DemolitionCaptureZone : MonoBehaviour
     public UnityEvent onCaptureStarted;
     public UnityEvent onCaptured;
     public UnityEvent onCapturedBackByNPC;
+    [SerializeField] private int capturePoints = 50;
+    [SerializeField] private int holdCompletePoints = 100;
 
     public float CaptureProgress => captureProgress;
     public bool Captured => captured;
@@ -83,6 +85,7 @@ public class DemolitionCaptureZone : MonoBehaviour
             captured = true;
 
             onCaptured?.Invoke();
+            GivePointsToPlayer(capturePoints);
 
             MissionManager.Instance.StartDemolitionHoldTimer();
         }
@@ -137,5 +140,21 @@ public class DemolitionCaptureZone : MonoBehaviour
 
         if (other.CompareTag(npcTag))
             npcInside = false;
+    }
+
+    private void GivePointsToPlayer(int amount)
+    {
+        GameObject player = GameObject.FindGameObjectWithTag(playerTag);
+
+        if (player == null)
+            return;
+
+        PlayerPoints points = player.GetComponent<PlayerPoints>();
+
+        if (points == null)
+            points = player.GetComponentInParent<PlayerPoints>();
+
+        if (points != null)
+            points.AddPoints(amount);
     }
 }

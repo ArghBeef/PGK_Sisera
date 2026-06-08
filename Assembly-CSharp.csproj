@@ -64,12 +64,14 @@
     <Compile Include="Assets\Scripts\Abilities\Ram\Passive\RamDamageRuntime.cs" />
     <Compile Include="Assets\Scripts\Abilities\Crow\CrowAllyAttackUltimate.cs" />
     <Compile Include="Assets\Scripts\Abilities\Ram\RamDecoy.cs" />
+    <Compile Include="Assets\Scripts\UI\PlayerPointsUI.cs" />
     <Compile Include="Assets\Scripts\UI\MouseCrosshair.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCTaunt.cs" />
     <Compile Include="Assets\Scripts\BreakableObject.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCMutualDialogueTrigger.cs" />
     <Compile Include="Assets\Scripts\DestroyAfterTime.cs" />
     <Compile Include="Assets\Scripts\Abilities\Ram\RamDecoyAbility.cs" />
+    <Compile Include="Assets\Scripts\Abilities\PlayerPoint.cs" />
     <Compile Include="Assets\Scripts\UI\WorldBillboard.cs" />
     <Compile Include="Assets\Scripts\Abilities\Passives\MoveSpeed.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuSelectable.cs" />
@@ -119,6 +121,7 @@
     <Compile Include="Assets\Scripts\TranslucentTrigger.cs" />
     <Compile Include="Assets\Scripts\StatusEffect.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCStatus.cs" />
+    <Compile Include="Assets\Scripts\FadeDisable.cs" />
     <Compile Include="Assets\ScriptableObjects\Abilities\PassiveDefinition.cs" />
     <Compile Include="Assets\Scripts\SuspiciousSource.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCSpawner.cs" />
@@ -133,6 +136,7 @@
     <Compile Include="Assets\Scripts\Mission\DemolitionZone.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCTagDetection.cs" />
     <Compile Include="Assets\Scripts\Interactables\InteractableLampToggle.cs" />
+    <Compile Include="Assets\Scripts\Abilities\PointReward.cs" />
     <Compile Include="Assets\Scripts\CameraFollow.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCController.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuUI.cs" />
@@ -152,6 +156,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Assets\Shaders\ToonOutline.shader" />
+    <None Include="Assets\Shaders\Water.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\Shaders\HalftoneToon_Emissive.shader" />
     <None Include="Assets\Shaders\WorldSpaceVisible.shader" />
@@ -1443,16 +1448,16 @@
       <HintPath>Library\ScriptAssemblies\Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Autodesk.Fbx.Editor">
+      <HintPath>Library\ScriptAssemblies\Autodesk.Fbx.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.Collections.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Collections.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.ShaderGraph.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Autodesk.Fbx.Editor">
-      <HintPath>Library\ScriptAssemblies\Autodesk.Fbx.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Editor.Shared">
