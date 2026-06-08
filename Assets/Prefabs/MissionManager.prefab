@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3637622813295831276}
   - component: {fileID: 5733164613376131540}
   - component: {fileID: 8248556114460760382}
+  - component: {fileID: 2606974848449802766}
   m_Layer: 0
   m_Name: MissionManager
   m_TagString: Untagged
@@ -91,5 +92,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07bfffbbd20025f4588677e653b8dbbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapRestart
-  restartDelay: 3
-  restartText: {fileID: 0}
+  mainMenuSceneName: MainMenu
+--- !u!114 &2606974848449802766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 402770716922087736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88972705772b3224581212855badae6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MissionStatsTracker
+  playerPoints: {fileID: 0}
+  playerHealth: {fileID: 0}

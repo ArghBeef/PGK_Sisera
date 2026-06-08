@@ -723,7 +723,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 23675260}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
   m_Name: 
@@ -7792,6 +7792,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: MissionManager
       objectReference: {fileID: 0}
+    - target: {fileID: 2606974848449802766, guid: 31186aed20a87d44d9c8068c35366133, type: 3}
+      propertyPath: playerHealth
+      value: 
+      objectReference: {fileID: 1817071667}
+    - target: {fileID: 2606974848449802766, guid: 31186aed20a87d44d9c8068c35366133, type: 3}
+      propertyPath: playerPoints
+      value: 
+      objectReference: {fileID: 1817071665}
     - target: {fileID: 3637622813295831276, guid: 31186aed20a87d44d9c8068c35366133, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -20990,6 +20998,14 @@ PrefabInstance:
       propertyPath: m_ClearFlags
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2678006615715826267, guid: cc8bbf2763d5618408d475120bfd26d8, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 294.6473
+      objectReference: {fileID: 0}
+    - target: {fileID: 2974010404468877272, guid: cc8bbf2763d5618408d475120bfd26d8, type: 3}
+      propertyPath: m_margin.z
+      value: 199.63249
+      objectReference: {fileID: 0}
     - target: {fileID: 3444433496492047990, guid: cc8bbf2763d5618408d475120bfd26d8, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -20997,6 +21013,14 @@ PrefabInstance:
     - target: {fileID: 3444433496492047990, guid: cc8bbf2763d5618408d475120bfd26d8, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5468229989452912774, guid: cc8bbf2763d5618408d475120bfd26d8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5477183676499339309, guid: cc8bbf2763d5618408d475120bfd26d8, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 87.635574
       objectReference: {fileID: 0}
     - target: {fileID: 5550180239477880055, guid: cc8bbf2763d5618408d475120bfd26d8, type: 3}
       propertyPath: m_AnchorMax.x
@@ -21006,6 +21030,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6066857238081963040, guid: cc8bbf2763d5618408d475120bfd26d8, type: 3}
+      propertyPath: m_margin.z
+      value: 258.77426
+      objectReference: {fileID: 0}
     - target: {fileID: 6826913476911724108, guid: cc8bbf2763d5618408d475120bfd26d8, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -21013,6 +21041,10 @@ PrefabInstance:
     - target: {fileID: 6826913476911724108, guid: cc8bbf2763d5618408d475120bfd26d8, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6983153558059657758, guid: cc8bbf2763d5618408d475120bfd26d8, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -162.82162
       objectReference: {fileID: 0}
     - target: {fileID: 7706234017911251959, guid: cc8bbf2763d5618408d475120bfd26d8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -23607,6 +23639,28 @@ Transform:
   - {fileID: 983649062}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1817071665 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8209627274801753683, guid: cc8bbf2763d5618408d475120bfd26d8, type: 3}
+  m_PrefabInstance: {fileID: 1562621190}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d8f3add2bc8cfb40834935d3fe7c321, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerPoints
+--- !u!114 &1817071667 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3751711349775171807, guid: cc8bbf2763d5618408d475120bfd26d8, type: 3}
+  m_PrefabInstance: {fileID: 1562621190}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbcb193eacaea494aa08a193a5663a28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
 --- !u!1 &1828796823
 GameObject:
   m_ObjectHideFlags: 0

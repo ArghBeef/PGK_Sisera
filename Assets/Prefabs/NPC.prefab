@@ -694,6 +694,7 @@ GameObject:
   - component: {fileID: 711396067660563499}
   - component: {fileID: 4566361978121398357}
   - component: {fileID: 2486976633079513037}
+  - component: {fileID: 4037762921854711634}
   m_Layer: 9
   m_Name: NPC
   m_TagString: NPC
@@ -1015,6 +1016,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 4037762921854711634}
+        m_TargetAssemblyTypeName: EnemyKillTracker, Assembly-CSharp
+        m_MethodName: RegisterKill
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &9034848258548830159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1083,6 +1096,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PointReward
   points: 65
+--- !u!114 &4037762921854711634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7721923480478965062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c848942118a78ce469537187f3730313, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyKillTracker
 --- !u!1 &8050257069624048086
 GameObject:
   m_ObjectHideFlags: 0

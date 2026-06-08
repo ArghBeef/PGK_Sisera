@@ -155,7 +155,7 @@ public class MissionManager : MonoBehaviour
         return currentMission.missionType == type;
     }
 
-    private void CompleteMission()
+    public void CompleteMission()
     {
         if (missionCompleted || missionFailed)
             return;
@@ -168,7 +168,7 @@ public class MissionManager : MonoBehaviour
         Debug.Log("Mission completed.");
     }
 
-    private void FailMission()
+    public void FailMission()
     {
         if (missionCompleted || missionFailed)
             return;

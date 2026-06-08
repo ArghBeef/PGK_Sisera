@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\NPC\NPCTaunt.cs" />
     <Compile Include="Assets\Scripts\BreakableObject.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCMutualDialogueTrigger.cs" />
+    <Compile Include="Assets\Scripts\UI\MissionStatUI.cs" />
     <Compile Include="Assets\Scripts\DestroyAfterTime.cs" />
     <Compile Include="Assets\Scripts\Abilities\Ram\RamDecoyAbility.cs" />
     <Compile Include="Assets\Scripts\Abilities\PlayerPoint.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Assets\Scripts\Abilities\Ram\RamShield.cs" />
     <Compile Include="Assets\Scripts\Weapon\WeaponBullet.cs" />
     <Compile Include="Assets\Scripts\Mission\KIllTarget.cs" />
+    <Compile Include="Assets\Scripts\Mission\MissionStats.cs" />
     <Compile Include="Assets\Scripts\Interactables\InterctableButton.cs" />
     <Compile Include="Assets\ScriptableObjects\Mission\MissionDefinition.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCWeaponShooter.cs" />
@@ -108,6 +110,7 @@
     <Compile Include="Assets\Scripts\UI\MissionUI.cs" />
     <Compile Include="Assets\ScriptableObjects\Weapon\WeaponItemDefinition.cs" />
     <Compile Include="Assets\ScriptableObjects\Abilities\AbilitiyDefinition.cs" />
+    <Compile Include="Assets\Scripts\Mission\PlayerMissionFail.cs" />
     <Compile Include="Assets\Scripts\PC_Movement.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueController.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueUI.cs" />
@@ -143,6 +146,7 @@
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCDialogueEntry.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDialog\NPCIdentity.cs" />
     <Compile Include="Assets\Scripts\Weapon\PlayerWeaponContoller.cs" />
+    <Compile Include="Assets\Scripts\Mission\EnemyKillTracker.cs" />
     <Compile Include="Assets\Scripts\NPC\NPCDetectionVisualizer.cs" />
     <Compile Include="Assets\Scripts\DragObject.cs" />
     <Compile Include="Assets\Scripts\Abilities\Crow\CrowCloneController.cs" />
