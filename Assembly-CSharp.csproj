@@ -74,6 +74,7 @@
     <Compile Include="Assets\Scripts\Abilities\Ram\RamDecoyAbility.cs" />
     <Compile Include="Assets\Scripts\Abilities\PlayerPoint.cs" />
     <Compile Include="Assets\Scripts\UI\WorldBillboard.cs" />
+    <Compile Include="Assets\Scripts\UI\PlayerPointTextUI.cs" />
     <Compile Include="Assets\Scripts\Abilities\Passives\MoveSpeed.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuSelectable.cs" />
     <Compile Include="Assets\Scripts\Abilities\Crow\CrowGroupAbility.cs" />

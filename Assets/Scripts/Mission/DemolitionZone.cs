@@ -25,7 +25,6 @@ public class DemolitionCaptureZone : MonoBehaviour
     public UnityEvent onCaptured;
     public UnityEvent onCapturedBackByNPC;
     [SerializeField] private int capturePoints = 50;
-    [SerializeField] private int holdCompletePoints = 100;
 
     public float CaptureProgress => captureProgress;
     public bool Captured => captured;

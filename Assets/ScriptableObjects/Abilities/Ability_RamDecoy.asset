@@ -16,10 +16,10 @@ MonoBehaviour:
   description: 
   icon: {fileID: 21300000, guid: e09fc9861f704d847931fb02853136e9, type: 3}
   cooldown: 5
-  previewPrefab: {fileID: 3646069235623117189, guid: ca0df88a8776cd94ca7828d3a77d0fc9, type: 3}
+  previewPrefab: {fileID: 1378554891425542425, guid: 1792b2939818ea54387dab04beffe07a, type: 3}
   placementLayers:
     serializedVersion: 2
     m_Bits: 64
   maxPlacementDistance: 120
   alignToGroundNormal: 1
-  decoyPrefab: {fileID: 5261087686097304800, guid: cb9fabdebbe24a24481cc9d668b027b4, type: 3}
+  decoyPrefab: {fileID: 1378554891425542425, guid: 1792b2939818ea54387dab04beffe07a, type: 3}
