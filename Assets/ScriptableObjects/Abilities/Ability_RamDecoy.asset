@@ -16,7 +16,7 @@ MonoBehaviour:
   description: 
   icon: {fileID: 21300000, guid: e09fc9861f704d847931fb02853136e9, type: 3}
   cooldown: 5
-  previewPrefab: {fileID: 1378554891425542425, guid: 1792b2939818ea54387dab04beffe07a, type: 3}
+  previewPrefab: {fileID: 1378554891425542425, guid: c1ee6aa8d8d334f4586d908ab7b9971a, type: 3}
   placementLayers:
     serializedVersion: 2
     m_Bits: 64

@@ -9,13 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8109571213035805042}
-  - component: {fileID: -1058633239833049745}
-  - component: {fileID: -3520838774455745773}
-  - component: {fileID: -8236984132430638607}
-  - component: {fileID: 3410928296501896881}
-  - component: {fileID: -2298512612265233811}
   m_Layer: 0
-  m_Name: Ram_Decoy
+  m_Name: Ram_Decoy_Spawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 1378554891425542425}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -38,124 +33,6 @@ Transform:
   - {fileID: 6554071877899168292}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &-1058633239833049745
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1378554891425542425}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 3, y: 5, z: 1}
-  m_Center: {x: 0, y: 0.5, z: 0}
---- !u!114 &-3520838774455745773
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1378554891425542425}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9a3bdcb177c7eb47857aa0cc9bd75e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SuspiciousSource
-  radius: 12
-  waitTime: 3
-  reportInterval: 1
-  reportOnStart: 1
---- !u!114 &-8236984132430638607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1378554891425542425}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbcb193eacaea494aa08a193a5663a28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 15
-  startWithFullHealth: 1
-  currentHealth: 0
-  destroyOnDeath: 1
-  destroyDelay: 0
-  changeTagOnDeath: 0
-  deathTag: Body
-  disableOnDeath: []
-  collidersToDisable: []
-  onDamaged:
-    m_PersistentCalls:
-      m_Calls: []
-  onHealed:
-    m_PersistentCalls:
-      m_Calls: []
-  onDeath:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &3410928296501896881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1378554891425542425}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fd4eb0f010a4bb47be6475771ee9fce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RamDecoy
-  lifetime: 15
-  suspiciousRadius: 15
-  waitTime: 5
-  reportOnStart: 1
-  explosionRadius: 15
-  explosionDamage: 40
-  pushForce: 8
-  upwardPush: 1.2
-  affectedLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  explosionEffectPrefab: {fileID: 4346371856432264787, guid: 5b069131010d6834c98c4bb9d9b5a2ac, type: 3}
---- !u!54 &-2298512612265233811
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1378554891425542425}
-  serializedVersion: 5
-  m_Mass: 2500
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1001 &6240383768821434020
 PrefabInstance:
   m_ObjectHideFlags: 0
